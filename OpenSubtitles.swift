@@ -16,7 +16,11 @@ final class OpenSubtitlesAuth: ObservableObject {
     private let keychainKey = "opensubtitles.session"
     private let userAgent = "NuviGo v1.0"
     var isSignedIn: Bool { session != nil }
-    var isConfigured: Bool { Config.isSet(Config.openSubtitlesAPIKey) }
+    @Published private(set) var hasKey = UserKey.openSubtitles.isSet
+    var isConfigured: Bool { hasKey }
+
+    func saveKey(_ key: String) { UserKey.openSubtitles.save(key); hasKey = UserKey.openSubtitles.isSet }
+    func removeKey() { UserKey.openSubtitles.remove(); hasKey = false; signOut() }
 
     init() {
         if let data = Keychain.load(key: keychainKey) {
@@ -25,7 +29,7 @@ final class OpenSubtitlesAuth: ObservableObject {
     }
 
     private func headers(token: String? = nil) -> [String: String] {
-        var h = ["Api-Key": Config.openSubtitlesAPIKey,
+        var h = ["Api-Key": UserKey.openSubtitles.value,
                  "User-Agent": userAgent,
                  "Content-Type": "application/json",
                  "Accept": "application/json"]
@@ -35,7 +39,7 @@ final class OpenSubtitlesAuth: ObservableObject {
 
     func signIn(username: String, password: String) async {
         error = nil
-        guard isConfigured else { error = "Add your OpenSubtitles API key in Config.swift first."; return }
+        guard isConfigured else { error = "Add your OpenSubtitles API key first."; return }
         busy = true
         defer { busy = false }
         guard let url = URL(string: "https://api.opensubtitles.com/api/v1/login") else { return }

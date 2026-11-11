@@ -1,15 +1,15 @@
 import SwiftUI
 
 /// Each person adds their own free OMDb key, so the daily limit (1,000 lookups) belongs to them alone.
-/// Saved in the Keychain. A key left in Config.swift still works as a fallback while you build and test.
+/// Saved in the Keychain. Nothing is built in.
 enum OMDbKey {
     private static let account = "omdbAPIKey"
 
     static var value: String {
         if let d = Keychain.load(key: account), let s = String(data: d, encoding: .utf8), !s.isEmpty { return s }
-        return Config.omdbAPIKey
+        return ""
     }
-    static var isSet: Bool { Config.isSet(value) }
+    static var isSet: Bool { !value.isEmpty }
     static var hasOwn: Bool { Keychain.load(key: account) != nil }
 
     static func save(_ key: String) { Keychain.save(Data(key.trimmingCharacters(in: .whitespacesAndNewlines).utf8), key: account) }

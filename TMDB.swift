@@ -1,6 +1,6 @@
 import Foundation
 
-/// The Movie Database. With just the API key in Config.swift it fills in missing posters and descriptions.
+/// The Movie Database. With your own free API key (added in Account) it fills in missing posters and descriptions.
 /// Signing in also lets you rate titles from the detail screen.
 @MainActor
 final class TMDBAuth: ObservableObject {
@@ -13,8 +13,12 @@ final class TMDBAuth: ObservableObject {
     private let imageBase = "https://image.tmdb.org/t/p"
     private var found: [String: (id: Int, isTV: Bool, poster: String?, backdrop: String?, overview: String?)] = [:]
 
+    @Published private(set) var hasKey = UserKey.tmdb.isSet
     var isSignedIn: Bool { sessionID != nil }
-    var isConfigured: Bool { Config.isSet(Config.tmdbAPIKey) }
+    var isConfigured: Bool { hasKey }
+
+    func saveKey(_ key: String) { UserKey.tmdb.save(key); hasKey = UserKey.tmdb.isSet }
+    func removeKey() { UserKey.tmdb.remove(); hasKey = false; signOut() }
 
     init() {
         sessionID = Keychain.load(key: keychainKey).flatMap { String(data: $0, encoding: .utf8) }
@@ -22,13 +26,13 @@ final class TMDBAuth: ObservableObject {
 
     private func url(_ path: String, _ extra: [String: String] = [:]) -> URL? {
         var q = extra
-        q["api_key"] = Config.tmdbAPIKey
+        q["api_key"] = UserKey.tmdb.value
         return HTTP.url(base + path, query: q)
     }
 
     func signIn() async {
         error = nil
-        guard isConfigured else { error = "Add your TMDB API key in Config.swift first."; return }
+        guard isConfigured else { error = "Add your TMDB API key first."; return }
         busy = true
         defer { busy = false }
         do {

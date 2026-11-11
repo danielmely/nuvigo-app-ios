@@ -2060,6 +2060,64 @@
         }
       }
     },
+    "Get a free key at opensubtitles.com": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consigue una clave gratuita en opensubtitles.com"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtenez une clé gratuite sur opensubtitles.com"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "opensubtitles.comで無料のキーを取得"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 opensubtitles.com 获取免费密钥"
+          }
+        }
+      }
+    },
+    "Get a free key at themoviedb.org": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consigue una clave gratuita en themoviedb.org"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtenez une clé gratuite sur themoviedb.org"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "themoviedb.orgで無料のキーを取得"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 themoviedb.org 获取免费密钥"
+          }
+        }
+      }
+    },
     "Go to the link below and enter this code:": {
       "extractionState": "manual",
       "localizations": {
@@ -7077,6 +7135,35 @@
         }
       }
     },
+    "Your OpenSubtitles API key": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu clave API de OpenSubtitles"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre clé API OpenSubtitles"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたのOpenSubtitles APIキー"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的 OpenSubtitles API 密钥"
+          }
+        }
+      }
+    },
     "Your Server": {
       "extractionState": "manual",
       "localizations": {
@@ -7102,6 +7189,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "你的服务器"
+          }
+        }
+      }
+    },
+    "Your TMDB API key": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu clave API de TMDB"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre clé API TMDB"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたのTMDB APIキー"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的 TMDB API 密钥"
           }
         }
       }

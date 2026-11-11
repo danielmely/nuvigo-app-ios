@@ -1,6 +1,6 @@
 import Foundation
 
-/// Keys and IDs for the services NuviGo can sign in to. Trakt's live in TraktClient.swift.
+/// IDs for the services NuviGo can sign in to. TMDB, OMDb and OpenSubtitles keys are not here: each person adds their own in Account. Trakt's live in TraktClient.swift.
 /// Each one is free to register; the comment says where, and what redirect URI to use.
 enum Config {
     /// https://simkl.com/settings/developer/
@@ -9,14 +9,6 @@ enum Config {
     static let anilistClientID = "YOUR_ANILIST_CLIENT_ID"
     /// https://myanimelist.net/apiconfig  (app type: other, redirect URL: nuvigo://mal)
     static let malClientID = "YOUR_MAL_CLIENT_ID"
-    /// https://www.opensubtitles.com/consumers
-    static let openSubtitlesAPIKey = "YOUR_OPENSUBTITLES_API_KEY"
-    /// https://www.themoviedb.org/settings/api
-    static let tmdbAPIKey = "YOUR_TMDB_API_KEY"
-
-    /// http://www.omdbapi.com/apikey.aspx  (free; gives the IMDb and Rotten Tomatoes ratings on movie pages)
-    static let omdbAPIKey = "YOUR_OMDB_API_KEY"
-
     /// Your NuviGo server on Railway, with no trailing slash, e.g. "https://nuvigo-server-production.up.railway.app".
     /// It runs the accounts (sign-up, sign-in and sync).
     static let serverURL = "YOUR_SERVER_URL"

@@ -152,7 +152,7 @@ struct DiscoverView: View {
                                                  symbol: "tag.fill", tint: Theme.accent))
                 } else {
                     ContentUnavailableView("TMDB key needed", systemImage: "key.fill",
-                        description: Text("Add your free TMDB API key in Config.swift to see what's on \(source.title)."))
+                        description: Text("Add your free TMDB API key in Account to see what's on \(source.title)."))
                 }
             } else {
                 ScrollView {

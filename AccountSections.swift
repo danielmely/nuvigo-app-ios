@@ -369,7 +369,10 @@ struct OpenSubtitlesSection: View {
     var body: some View {
         let os = services.openSubtitles
         CollapsibleSection("OpenSubtitles") {
-            if let s = os.session {
+            if !os.hasKey {
+                APIKeyEntry(placeholder: "Your OpenSubtitles API key", linkTitle: "Get a free key at opensubtitles.com",
+                            link: "https://www.opensubtitles.com/consumers", onSave: { os.saveKey($0) })
+            } else if let s = os.session {
                 ConnectedRow(text: "Signed in as \(s.username)")
                 Text("Subtitles in your phone's languages are added to the player's subtitle menu.")
                     .font(.footnote).foregroundStyle(.secondary)
@@ -387,10 +390,28 @@ struct OpenSubtitlesSection: View {
                     if os.busy { ProgressView() } else { Text("Sign in") }
                 }
                 .disabled(username.isEmpty || password.isEmpty || os.busy)
-                ConfigHint(show: !os.isConfigured, text: "Add your OpenSubtitles API key in Config.swift to enable sign-in.")
             }
+            if os.hasKey { Button("Remove key", role: .destructive) { os.removeKey() } }
             ErrorText(message: os.error)
         }
+    }
+}
+
+/// Field, save button and "get a key" link, shown until the person has added their own key.
+struct APIKeyEntry: View {
+    let placeholder: LocalizedStringKey
+    let linkTitle: LocalizedStringKey
+    let link: String
+    let onSave: (String) -> Void
+    @State private var text = ""
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        SecureField(placeholder, text: $text)
+            .textInputAutocapitalization(.never).autocorrectionDisabled()
+        Button("Save key") { onSave(text); text = "" }
+            .disabled(text.trimmingCharacters(in: .whitespaces).isEmpty)
+        Button(linkTitle) { if let u = URL(string: link) { openURL(u) } }
     }
 }
 
@@ -400,7 +421,10 @@ struct TMDBSection: View {
     var body: some View {
         let t = services.tmdb
         CollapsibleSection("TMDB") {
-            if t.isSignedIn {
+            if !t.hasKey {
+                APIKeyEntry(placeholder: "Your TMDB API key", linkTitle: "Get a free key at themoviedb.org",
+                            link: "https://www.themoviedb.org/settings/api", onSave: { t.saveKey($0) })
+            } else if t.isSignedIn {
                 ConnectedRow(text: "Signed in")
                 Text("Rate titles from their detail screen. Missing posters and descriptions fill in automatically.")
                     .font(.footnote).foregroundStyle(.secondary)
@@ -410,13 +434,10 @@ struct TMDBSection: View {
                     if t.busy { ProgressView() } else { Text("Sign in with TMDB") }
                 }
                 .disabled(t.busy)
-                if t.isConfigured {
-                    Text("Missing posters and descriptions already fill in from TMDB. Sign in to rate titles too.")
-                        .font(.footnote).foregroundStyle(.secondary)
-                } else {
-                    ConfigHint(show: true, text: "Add your TMDB API key in Config.swift to enable this.")
-                }
+                Text("Missing posters and descriptions already fill in from TMDB. Sign in to rate titles too.")
+                    .font(.footnote).foregroundStyle(.secondary)
             }
+            if t.hasKey { Button("Remove key", role: .destructive) { t.removeKey() } }
             ErrorText(message: t.error)
         }
     }

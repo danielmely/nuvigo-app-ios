@@ -73,7 +73,7 @@ struct AddonsView: View {
             if !OMDbKey.hasOwn {
                 out.append(Suggestion(name: "OMDb", icon: "star.bubble", blurb: "IMDb and Rotten Tomatoes ratings. Add a free key."))
             }
-            if !services.tmdb.isSignedIn {
+            if !services.tmdb.hasKey {
                 out.append(Suggestion(name: "TMDB", icon: "photo.on.rectangle", blurb: "Better posters and descriptions, and rate titles."))
             }
             return out

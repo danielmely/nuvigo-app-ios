@@ -7,7 +7,7 @@ SwiftUI iOS 17+ app that installs Stremio-protocol addons by URL, browses their 
 2. Delete the generated `App` and `ContentView` files (and `HomeView.swift` if you added it earlier; it's replaced by the Browse, Category, Search and Components files), then drag all `.swift` files in this folder into the project.
 3. Set the iOS deployment target to 17.0 (uses `ContentUnavailableView` and the new `onChange`).
 4. **Trakt:** create an app at trakt.tv/oauth/applications (redirect URI `urn:ietf:wg:oauth:2.0:oob`), then paste its Client ID and Secret into `TraktConfig` in `TraktClient.swift`.
-5. **Other services (all optional):** open `Config.swift` and paste in whichever keys you want. Each line says where to get one. Anything left as `YOUR_…` just shows a hint in the Account tab.
+5. **Other services (all optional):** open `Config.swift` and paste in the sign-in IDs you want. TMDB, OMDb and OpenSubtitles keys are not stored in the app: each user adds their own in Account. Each line says where to get one. Anything left as `YOUR_…` just shows a hint in the Account tab.
    - AniList: redirect URL `nuvigo://anilist`. MyAnimeList: app type "other", redirect URL `nuvigo://mal`. Simkl, OpenSubtitles and TMDB need no redirect.
    - Jellyfin, Plex, Real-Debrid, TorBox, AllDebrid and Premiumize need no keys: you sign in with your own account in the app.
    - **Local servers:** add `NSLocalNetworkUsageDescription` to Info.plist (any text, e.g. "Connects to your media server"), and for plain `http://` servers set `NSAllowsLocalNetworking = YES` under `NSAppTransportSecurity`.
@@ -25,7 +25,7 @@ SwiftUI iOS 17+ app that installs Stremio-protocol addons by URL, browses their 
 - `SearchView.swift` – Search tab, searches as you type; empty state shows streaming-service and genre cards
 - `NuviAccount.swift`, `NuviAccountViews.swift` – NuviGo accounts: sign-up, sign-in and sync of addons, progress, settings and logins (server code is in the nuvigo-server repo)
 - `WatchedStore.swift`, `WatchedViews.swift` – the Already watched card: everything you have watched, your 1-10 ratings, and three picks with a "likely to like" score
-- `Ratings.swift` – IMDb and Rotten Tomatoes ratings on the movie page (needs a free OMDb key in Config.swift)
+- `Ratings.swift` – IMDb and Rotten Tomatoes ratings on the movie page (needs a free OMDb key, added in Account)
 - `StreamingServices.swift` – service and genre card models, plus the screen they open (needs a TMDB key for services)
 - `Components.swift` – shared poster row, poster and continue cards, watchlist loader
 - `DetailView.swift` – details, episode picker, stream list from every addon that supports it
