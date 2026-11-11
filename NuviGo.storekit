@@ -1,0 +1,112 @@
+{
+  "identifier": "A1B2C3D4",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "6740000101",
+      "localizations": [
+        {
+          "description": "An optional tip to help with server costs",
+          "displayName": "A coffee",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nuvigo.tip.small",
+      "referenceName": "A coffee",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "2.99",
+      "familyShareable": false,
+      "internalID": "6740000102",
+      "localizations": [
+        {
+          "description": "An optional tip to help with server costs",
+          "displayName": "Popcorn",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nuvigo.tip.medium",
+      "referenceName": "Popcorn",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "6740000103",
+      "localizations": [
+        {
+          "description": "An optional tip to help with server costs",
+          "displayName": "Movie night",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nuvigo.tip.large",
+      "referenceName": "Movie night",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "6740000104",
+      "localizations": [
+        {
+          "description": "An optional tip to help with server costs",
+          "displayName": "Big thanks",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nuvigo.tip.huge",
+      "referenceName": "Big thanks",
+      "type": "Consumable"
+    }
+  ],
+  "settings": {
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA",
+    "_askToBuyEnabled": false
+  },
+  "subscriptionGroups": [
+    {
+      "id": "21400001",
+      "localizations": [],
+      "name": "NuviGo Premium",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "0.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6740000001",
+          "introductoryOffer": {
+            "internalID": "6740000002",
+            "numberOfPeriods": 1,
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          },
+          "localizations": [
+            {
+              "description": "Full access to NuviGo",
+              "displayName": "NuviGo Premium (monthly)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.nuvigo.app.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "NuviGo Premium Monthly",
+          "subscriptionGroupID": "21400001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}
