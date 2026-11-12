@@ -372,8 +372,8 @@ struct AccountBottomSection: View {
                 Button {
                     if let url = URL(string: "https://apps.apple.com/account/subscriptions") { openURL(url) }
                 } label: {
-                    BottomRowLabel(icon: "xmark.circle", title: "Cancel subscription", tint: .red,
-                                   caption: "Opens your Apple ID subscriptions, where you can turn off renewal.", external: true)
+                    BottomRowLabel(icon: "xmark.circle", title: "Cancel subscription",
+                                   caption: "Opens your Apple ID subscriptions, where you can turn off renewal.", tint: .red, external: true)
                 }
             } header: {
                 Text("Subscription").font(.headline).textCase(nil)

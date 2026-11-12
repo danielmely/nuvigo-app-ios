@@ -391,8 +391,9 @@ struct ClearDataSection: View {
 
     var body: some View {
         Button { confirm = true } label: {
-            BottomRowLabel(icon: "trash", title: "Clear my data", tint: .red,
-                           caption: "Removes this profile's watch history, progress and downloads. Your account, addons and settings stay.")
+            BottomRowLabel(icon: "trash", title: "Clear my data",
+                           caption: "Removes this profile's watch history, progress and downloads. Your account, addons and settings stay.",
+                           tint: .red)
         }
         .confirmationDialog("Clear your data?", isPresented: $confirm, titleVisibility: .visible) {
             Button("Clear my data", role: .destructive) {
