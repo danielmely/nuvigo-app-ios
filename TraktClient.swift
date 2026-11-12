@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 // MARK: - Config
 // Create an app at https://trakt.tv/oauth/applications (redirect URI: urn:ietf:wg:oauth:2.0:oob)

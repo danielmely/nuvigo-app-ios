@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct SimklPin: Decodable {
     let user_code: String

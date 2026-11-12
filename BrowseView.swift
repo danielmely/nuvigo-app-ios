@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct BrowseCategory: Identifiable, Hashable {
     enum Kind: Hashable {

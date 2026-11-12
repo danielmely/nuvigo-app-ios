@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import ActivityKit
 
 // Shared between the app and the NuviGoWidgets extension. Describes the Lock Screen / Dynamic Island download card.

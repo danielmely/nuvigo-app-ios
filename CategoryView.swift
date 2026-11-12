@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Sort and filter choices for a category screen.
 struct ListOptions: Equatable {

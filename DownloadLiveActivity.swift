@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import ActivityKit
 
 /// Shows download progress on the Lock Screen and in the Dynamic Island while files are downloading.

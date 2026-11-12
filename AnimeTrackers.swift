@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Anime trackers don't use IMDb ids, so NuviGo looks the show up by title and updates your list.
 /// Only titles that look like anime are sent: an "Anime" genre, or an addon id from Kitsu, MAL, AniList or AniDB.

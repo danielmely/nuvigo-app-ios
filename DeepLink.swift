@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import CoreSpotlight
 
 /// One place that turns "open this title" requests (widgets, notifications, Spotlight, Siri) into screens.

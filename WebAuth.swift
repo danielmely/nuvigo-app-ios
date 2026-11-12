@@ -1,4 +1,5 @@
 import AuthenticationServices
+import Combine
 import UIKit
 
 /// Runs a browser sign-in (AniList, MyAnimeList) and returns the URL the site redirected back to.

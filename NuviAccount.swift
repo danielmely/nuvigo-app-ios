@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CryptoKit
 
 /// A NuviGo account on your own server: sign up, sign in, and keep addons, watch progress, settings

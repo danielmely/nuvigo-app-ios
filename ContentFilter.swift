@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// The maturity classes a person can hide. TV ratings are folded into the nearest movie class:
 /// TV-Y, TV-Y7 and TV-G count as G, TV-PG as PG, TV-14 as PG-13 and TV-MA as R.

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// IMDb and Rotten Tomatoes ratings (plus a plot summary), from OMDb.
 struct TitleRatings: Codable {

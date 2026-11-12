@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Where an addon sits in the list, most important first.
 enum AddonTier: Int, CaseIterable, Identifiable {

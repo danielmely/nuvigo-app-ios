@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct Addon: Identifiable {
     let baseURL: URL          // manifest URL minus "/manifest.json"
@@ -71,19 +72,17 @@ enum AddonClient {
 
     static func streams(_ addon: Addon, type: String, id: String) async throws -> [Stream] {
         guard let url = URL(string: "\(addon.baseURL.absoluteString)/stream/\(type)/\(id).json") else { throw AddonError.invalidURL }
-        streamLock.lock()
-        let hit = streamCache[url]
-        streamLock.unlock()
+        let hit = streamLock.withLock { streamCache[url] }
         if let hit, Date().timeIntervalSince(hit.at) < 600 { return hit.streams }
         let streams = (try await get(url) as StreamResponse).streams
-        streamLock.lock(); streamCache[url] = (Date(), streams); streamLock.unlock()
+        streamLock.withLock { streamCache[url] = (Date(), streams) }
         return streams
     }
 
     /// Stream lists fetched at start-up are kept for ten minutes so opening a title is instant.
     private nonisolated(unsafe) static var streamCache: [URL: (at: Date, streams: [Stream])] = [:]
     private static let streamLock = NSLock()
-    static func clearStreamCache() { streamLock.lock(); streamCache = [:]; streamLock.unlock() }
+    static func clearStreamCache() { streamLock.withLock { streamCache = [:] } }
 
     /// With `cache`, a good response is saved to disk and used if the network fails later (offline).
     private static func get<T: Decodable>(_ url: URL, cache: Bool = false) async throws -> T {

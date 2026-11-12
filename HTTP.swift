@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Small helpers shared by the service clients.
 enum HTTP {

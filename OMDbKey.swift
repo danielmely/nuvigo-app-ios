@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Each person adds their own free OMDb key, so the daily limit (1,000 lookups) belongs to them alone.
 /// Saved in the Keychain. Nothing is built in.

@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct CatalogRow: Identifiable {
     let id: String

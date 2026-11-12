@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// The last words you searched for, kept on this device for each profile. Nothing is saved in Private mode.
 enum RecentSearches {

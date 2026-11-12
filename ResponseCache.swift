@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CryptoKit
 import Network
 
@@ -46,7 +47,9 @@ final class NetworkMonitor: ObservableObject {
     @Published private(set) var isOnline = true
     private let monitor = NWPathMonitor()
 
-    init() {
+    init() { begin() }
+
+    private func begin() {
         monitor.pathUpdateHandler = { [weak self] path in
             let online = path.status == .satisfied
             Task { @MainActor in self?.isOnline = online }

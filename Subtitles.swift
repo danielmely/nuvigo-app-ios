@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct SubtitleCue {
     let start: TimeInterval

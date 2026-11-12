@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 extension BrowseCategory.Kind {
     // Shared so the Browse cards and the cover-art loader always agree on which card is which.

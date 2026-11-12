@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import Charts
 
 /// How much you watch. Kept on this device only (per profile) and never uploaded. Private mode records nothing.

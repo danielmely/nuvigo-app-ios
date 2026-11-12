@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// A folder on a media server, such as "Movies" or "TV Shows".
 struct LibraryFolder: Identifiable, Hashable {

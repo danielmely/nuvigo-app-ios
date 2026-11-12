@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// The Movie Database. With your own free API key (added in Account) it fills in missing posters and descriptions.
 /// Signing in also lets you rate titles from the detail screen.

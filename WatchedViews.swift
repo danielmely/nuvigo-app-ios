@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// The "Already watched" screen: three picks for you on top, then every title you've watched with your rating.
 struct WatchedContent: View {

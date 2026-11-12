@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Security
 
 /// Minimal Keychain wrapper for small secrets (Trakt token, debrid API token).

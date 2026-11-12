@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// The extra player for mkv, avi, webm and other files AVPlayer can't open.
 ///

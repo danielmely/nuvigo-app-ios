@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 // Shared between the NuviGo app and the NuviGoWidgets extension (tick both targets in the File inspector).
 // Foundation only, so the widget never needs the rest of the app.

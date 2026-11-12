@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import UIKit
 
 /// Lets you pick a different app icon. The pictures are the PNG files in the AlternateIcons folder,

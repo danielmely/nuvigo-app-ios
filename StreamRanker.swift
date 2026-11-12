@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// What a stream's name and title say about its quality.
 struct StreamInfo {

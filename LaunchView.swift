@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Start-up screen: logo and a loading bar while the app gets everything ready.
 struct LaunchView: View {

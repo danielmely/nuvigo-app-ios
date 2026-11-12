@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// OpenSubtitles.com account. Adds subtitle tracks (in your phone's languages) to titles with IMDb ids.
 @MainActor

@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// A List section whose title has a chevron. Tap the title to open or close it.
 struct CollapsibleSection<Content: View, Footer: View>: View {

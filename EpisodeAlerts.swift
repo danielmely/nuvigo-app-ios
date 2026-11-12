@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import UserNotifications
 
 /// Local notifications for new episodes of the shows you follow on Trakt. Nothing is sent from a server:

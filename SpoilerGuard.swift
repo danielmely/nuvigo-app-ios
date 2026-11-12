@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Optional: hides the titles of episodes you haven't watched yet, because a title can give away a plot point.
 /// Turn it on in Account > Playback. Episode numbers still show.

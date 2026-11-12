@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// A major streaming service shown as a card on the Search tab.
 /// `provider` is the TMDB watch-provider ID used to list what's on it.

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct WatchProgress: Codable, Identifiable {
     let key: String            // stream id (movie id or episode id)

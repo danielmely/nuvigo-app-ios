@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Start-up helpers: fetch things ahead of time so screens open with everything already in hand.
 enum Warmup {

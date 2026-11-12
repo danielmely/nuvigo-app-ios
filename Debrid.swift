@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 enum FeatureFlags {
     /// Turns torrent playback through a debrid service on or off. Set to false for an App Store build
