@@ -157,8 +157,9 @@ struct DetailView: View {
                     let blurb = shown.description.flatMap { $0.isEmpty ? nil : $0 } ?? ratings?.plot
                     if let d = blurb {
                         Text(d)
-                            .font(.callout)
-                            .lineLimit(descriptionExpanded ? nil : 4)
+                            .font(.body)
+                            .lineSpacing(3)
+                            .lineLimit(descriptionExpanded ? nil : 8)
                             .onTapGesture { withAnimation { descriptionExpanded.toggle() } }
                     }
                     ratingsRow
