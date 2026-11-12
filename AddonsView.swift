@@ -53,6 +53,8 @@ struct AddonsView: View {
     @EnvironmentObject var services: Services
     @EnvironmentObject var preload: Preloader
     @EnvironmentObject var account: NuviAccount
+    @EnvironmentObject var filter: ContentFilter
+    @State private var keySheet: KeyKind?
     @State private var input = ""
     @State private var error: String?
     @State private var adding = false
@@ -67,7 +69,14 @@ struct AddonsView: View {
         let icon: String
         let blurb: LocalizedStringKey
         var installURL: String? = nil
+        var key: KeyKind? = nil
         var id: String { name }
+    }
+
+    /// Services that need the person's own free key. Added in a small sheet, without leaving this page.
+    private enum KeyKind: String, Identifiable {
+        case omdb, tmdb
+        var id: String { rawValue }
     }
 
     /// Stremio's own add-ons. Matched by their manifest id, so one already installed from anywhere is not suggested again.
@@ -87,10 +96,10 @@ struct AddonsView: View {
                                           blurb: "Shows which services stream a title, like Netflix or Hulu.",
                                           url: "https://watchhub.strem.io/manifest.json") { out.append(s) }
             if !OMDbKey.hasOwn {
-                out.append(Suggestion(name: "OMDb", icon: "star.bubble", blurb: "IMDb and Rotten Tomatoes ratings. Add a free key."))
+                out.append(Suggestion(name: "OMDb", icon: "star.bubble", blurb: "IMDb and Rotten Tomatoes ratings. Add a free key.", key: .omdb))
             }
             if !services.tmdb.hasKey {
-                out.append(Suggestion(name: "TMDB", icon: "photo.on.rectangle", blurb: "Better posters and descriptions, and rate titles."))
+                out.append(Suggestion(name: "TMDB", icon: "photo.on.rectangle", blurb: "Better posters and descriptions, and rate titles.", key: .tmdb))
             }
             return out
         case .servers:
@@ -125,6 +134,14 @@ struct AddonsView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
                 }
+            }
+        } else if let kind = s.key {
+            HStack(spacing: 12) {
+                suggestionLabel(s)
+                Spacer(minLength: 0)
+                Button("Add key") { keySheet = kind }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
             }
         } else {
             Button { DeepLink.shared.openTab(3) } label: {
@@ -251,6 +268,35 @@ struct AddonsView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(item: $keySheet) { kind in
+                NavigationStack {
+                    Form {
+                        Section {
+                            switch kind {
+                            case .omdb:
+                                APIKeyEntry(placeholder: "Your OMDb API key", linkTitle: "Get a free key at omdbapi.com",
+                                            link: "https://www.omdbapi.com/apikey.aspx") { key in
+                                    OMDbKey.save(key); filter.clearCache(); keySheet = nil
+                                }
+                            case .tmdb:
+                                APIKeyEntry(placeholder: "Your TMDB API key", linkTitle: "Get a free key at themoviedb.org",
+                                            link: "https://www.themoviedb.org/settings/api") { key in
+                                    services.tmdb.saveKey(key); keySheet = nil
+                                }
+                            }
+                        } footer: {
+                            switch kind {
+                            case .omdb: Text("Used for IMDb and Rotten Tomatoes scores and the Hide by rating filter. A free key allows 1,000 lookups a day, and it's yours alone. Without a key, ratings and hiding by rating are off.")
+                            case .tmdb: Text("Missing posters and descriptions already fill in from TMDB. Sign in to rate titles too.")
+                            }
+                        }
+                    }
+                    .navigationTitle(kind == .omdb ? "OMDb" : "TMDB")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { keySheet = nil } } }
+                }
+                .presentationDetents([.medium])
+            }
             // Pull down to reload everything, the same as the Dashboard. The page moves with your finger.
             .refreshable {
                 await preload.refresh(store: store, trakt: trakt, services: services, account: account, progress: progress)
