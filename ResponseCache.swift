@@ -52,7 +52,7 @@ final class NetworkMonitor: ObservableObject {
     private func begin() {
         monitor.pathUpdateHandler = { [weak self] path in
             let online = path.status == .satisfied
-            Task { @MainActor in self?.isOnline = online }
+            Task { @MainActor [weak self] in self?.isOnline = online }
         }
         monitor.start(queue: DispatchQueue(label: "nuvigo.network"))
     }

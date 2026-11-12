@@ -453,8 +453,9 @@ struct ResetDefaultsSection: View {
 
     var body: some View {
         Button { confirm = true } label: {
-            BottomRowLabel(icon: "arrow.counterclockwise", title: "Reset to default", tint: .red,
-                           caption: "Resets appearance, playback, download options, hidden ratings and card order. Your account, addons and watch history stay.")
+            BottomRowLabel(icon: "arrow.counterclockwise", title: "Reset to default",
+                           caption: "Resets appearance, playback, download options, hidden ratings and card order. Your account, addons and watch history stay.",
+                           tint: .red)
         }
         .confirmationDialog("Reset all settings to default?", isPresented: $confirm, titleVisibility: .visible) {
             Button("Reset to default", role: .destructive) { Self.resetAll() }
