@@ -5,7 +5,7 @@ import CryptoKit
 
 // MARK: - Settings keys
 
-enum PrivacyKeys {
+nonisolated enum PrivacyKeys {
     nonisolated static let appLock = "appLockEnabled"
     nonisolated static let hideInSwitcher = "hideInSwitcher"
     nonisolated static let privateMode = "privateMode"
@@ -14,13 +14,13 @@ enum PrivacyKeys {
 }
 
 /// Private mode: nothing you watch is remembered. No progress, no Watched list, no Trakt/Simkl/AniList/MAL updates.
-enum PrivateMode {
+nonisolated enum PrivateMode {
     static var isOn: Bool { UserDefaults.standard.bool(forKey: PrivacyKeys.privateMode) }
 }
 
 // MARK: - Profiles
 
-struct Profile: Codable, Identifiable, Hashable {
+nonisolated struct Profile: Codable, Identifiable, Hashable {
     var id: String
     var name: String
     var kids: Bool

@@ -4,7 +4,7 @@ import CryptoKit
 import Network
 
 /// Saves addon responses (manifests, catalogs, details) to disk so Browse still works with no connection.
-enum ResponseCache {
+nonisolated enum ResponseCache {
     private static let dir: URL = {
         let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         let d = base.appendingPathComponent("addon-cache", isDirectory: true)

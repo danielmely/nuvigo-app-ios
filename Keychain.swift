@@ -3,7 +3,7 @@ import Combine
 import Security
 
 /// Minimal Keychain wrapper for small secrets (Trakt token, debrid API token).
-enum Keychain {
+nonisolated enum Keychain {
     static func save(_ data: Data, key: String) {
         let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
                                 kSecAttrAccount as String: key]

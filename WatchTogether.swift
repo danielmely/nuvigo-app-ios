@@ -6,7 +6,7 @@ import AVFoundation
 /// Watch together over FaceTime (SharePlay). Everyone opens the same title in their own NuviGo and plays their own stream,
 /// while play, pause and seeking stay in step. No video or links are shared between people.
 /// Needs the "Group Activities" capability on the app target.
-struct WatchTogetherActivity: GroupActivity {
+nonisolated struct WatchTogetherActivity: GroupActivity {
     var type: String
     var id: String
     var name: String

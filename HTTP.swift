@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 /// Small helpers shared by the service clients.
-enum HTTP {
+nonisolated enum HTTP {
     static func send(_ url: URL, method: String = "GET", headers: [String: String] = [:],
                      body: Data? = nil, timeout: TimeInterval = 20) async throws -> (Int, Data) {
         var req = URLRequest(url: url)

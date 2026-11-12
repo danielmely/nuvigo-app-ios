@@ -2,13 +2,13 @@ import Foundation
 import Combine
 
 /// A folder on a media server, such as "Movies" or "TV Shows".
-struct LibraryFolder: Identifiable, Hashable {
+nonisolated struct LibraryFolder: Identifiable, Hashable {
     let id: String
     let name: String
 }
 
 /// A folder together with the server it lives on.
-struct LibraryFolderRef: Identifiable, Hashable {
+nonisolated struct LibraryFolderRef: Identifiable, Hashable {
     let prefix: String
     let sourceName: String
     let folder: LibraryFolder

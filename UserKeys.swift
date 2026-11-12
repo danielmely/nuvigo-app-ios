@@ -3,7 +3,7 @@ import Combine
 
 /// API keys that belong to the person using the app. Nothing is built in: each person adds their own free key
 /// in Account, and it is stored only in their Keychain.
-enum UserKey: String {
+nonisolated enum UserKey: String {
     case tmdb = "userKey.tmdb"
     case openSubtitles = "userKey.opensubtitles"
 

@@ -4,7 +4,7 @@ import UIKit
 
 /// Lets you pick a different app icon. The pictures are the PNG files in the AlternateIcons folder,
 /// and each one is also listed under CFBundleAlternateIcons in Info.plist (see SETUP-NEW-FEATURES.md).
-struct AppIconOption: Identifiable, Hashable {
+nonisolated struct AppIconOption: Identifiable, Hashable {
     let id: String          // nil icon name = the normal icon
     let name: String?       // alternate icon name, nil for the default
     let title: String

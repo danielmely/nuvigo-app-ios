@@ -53,7 +53,7 @@ enum DebridService: String, CaseIterable, Identifiable {
     }
 }
 
-struct DebridAccount {
+nonisolated struct DebridAccount {
     var username: String?
     var isPremium: Bool
 }

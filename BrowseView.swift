@@ -1,8 +1,8 @@
 import SwiftUI
 import Combine
 
-struct BrowseCategory: Identifiable, Hashable {
-    enum Kind: Hashable {
+nonisolated struct BrowseCategory: Identifiable, Hashable {
+    nonisolated enum Kind: Hashable {
         case continueWatching, watchlist, upcoming, downloads, watched
         case type(String)     // "movie" or "series"
         case genre(String)

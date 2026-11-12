@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-struct SimklPin: Decodable {
+nonisolated struct SimklPin: Decodable {
     let user_code: String
     let verification_url: String
     let expires_in: Int

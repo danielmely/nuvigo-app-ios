@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-struct WatchProgress: Codable, Identifiable {
+nonisolated struct WatchProgress: Codable, Identifiable {
     let key: String            // stream id (movie id or episode id)
     let itemID: String         // parent title id
     let itemType: String

@@ -3,7 +3,7 @@ import Combine
 
 /// Which title a playback key points at, in the terms the trackers understand.
 /// Keys look like "tt0111161" (movie) or "tt0944947:1:2" (series, season 1 episode 2).
-struct TitleRef {
+nonisolated struct TitleRef {
     let imdb: String
     let season: Int?
     let episode: Int?

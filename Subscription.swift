@@ -301,7 +301,7 @@ struct SubscriptionSection: View {
 
 /// VPNs suggested on the Add-ons page. No prices are shown (they change often); people check the site.
 /// If you ever earn money from these links, say so in your Privacy Policy and App Store notes.
-struct VPNPick: Identifiable {
+nonisolated struct VPNPick: Identifiable {
     let name: String, tag: String, blurb: String, icon: String, url: URL
     var id: String { name }
 }

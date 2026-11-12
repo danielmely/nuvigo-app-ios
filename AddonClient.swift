@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-struct Addon: Identifiable {
+nonisolated struct Addon: Identifiable {
     let baseURL: URL          // manifest URL minus "/manifest.json"
     let manifest: AddonManifest
     var id: String { baseURL.absoluteString }
@@ -17,7 +17,7 @@ struct Addon: Identifiable {
     }
 }
 
-enum AddonError: LocalizedError {
+nonisolated enum AddonError: LocalizedError {
     case invalidURL, badStatus(Int)
     var errorDescription: String? {
         switch self {
@@ -27,7 +27,7 @@ enum AddonError: LocalizedError {
     }
 }
 
-enum AddonClient {
+nonisolated enum AddonClient {
     /// Accepts https://host/.../manifest.json, stremio://host/..., or a bare base URL.
     static func normalize(_ input: String) -> URL? {
         var s = input.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 /// What a stream's name and title say about its quality.
-struct StreamInfo {
+nonisolated struct StreamInfo {
     var resolution = 0
     var hdr = false
     var dolbyVision = false

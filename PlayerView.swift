@@ -4,7 +4,7 @@ import AVKit
 
 typealias ResolveNext = @MainActor (PlayItem) async -> PlayItem?
 
-struct PlayItem: Identifiable {
+nonisolated struct PlayItem: Identifiable {
     let id = UUID()
     let url: URL
     let context: PlaybackContext

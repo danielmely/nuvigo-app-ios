@@ -3,7 +3,7 @@ import Combine
 
 /// A major streaming service shown as a card on the Search tab.
 /// `provider` is the TMDB watch-provider ID used to list what's on it.
-struct StreamingService: Identifiable, Hashable {
+nonisolated struct StreamingService: Identifiable, Hashable {
     let name: String
     let provider: Int
     let colors: [Color]
@@ -30,7 +30,7 @@ struct StreamingService: Identifiable, Hashable {
 }
 
 /// A genre users can browse, with its TMDB IDs for movies and for shows.
-struct GenreOption: Identifiable, Hashable {
+nonisolated struct GenreOption: Identifiable, Hashable {
     let name: String
     let emoji: String
     let movieID: Int?
@@ -64,7 +64,7 @@ struct GenreOption: Identifiable, Hashable {
 }
 
 /// What a Search-tab card opens.
-enum DiscoverSource: Hashable {
+nonisolated enum DiscoverSource: Hashable {
     case service(StreamingService)
     case genre(GenreOption)
 

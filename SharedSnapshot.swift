@@ -4,7 +4,7 @@ import Combine
 // Shared between the NuviGo app and the NuviGoWidgets extension (tick both targets in the File inspector).
 // Foundation only, so the widget never needs the rest of the app.
 
-enum NuviGoShared {
+nonisolated enum NuviGoShared {
     /// Create this App Group on both targets (Signing & Capabilities > App Groups).
     static let appGroup = "group.com.nuvigo.app"
     static let scheme = "nuvigo"
@@ -24,7 +24,7 @@ enum NuviGoShared {
     }
 }
 
-struct WidgetContinueItem: Codable, Identifiable, Hashable {
+nonisolated struct WidgetContinueItem: Codable, Identifiable, Hashable {
     let id: String            // title id
     let type: String
     let name: String
@@ -33,7 +33,7 @@ struct WidgetContinueItem: Codable, Identifiable, Hashable {
     let posterFile: String?   // file name inside NuviGoShared.postersDir
 }
 
-struct WidgetUpcomingItem: Codable, Identifiable, Hashable {
+nonisolated struct WidgetUpcomingItem: Codable, Identifiable, Hashable {
     let id: String
     let imdb: String
     let show: String
@@ -41,7 +41,7 @@ struct WidgetUpcomingItem: Codable, Identifiable, Hashable {
     let airs: Date
 }
 
-struct WidgetSnapshot: Codable {
+nonisolated struct WidgetSnapshot: Codable {
     var continueWatching: [WidgetContinueItem] = []
     var upcoming: [WidgetUpcomingItem] = []
     var updated = Date()

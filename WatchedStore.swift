@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 /// A movie or show you've already seen, with your own 1-10 rating if you gave one.
-struct WatchedItem: Codable, Identifiable, Hashable {
+nonisolated struct WatchedItem: Codable, Identifiable, Hashable {
     let id: String          // IMDb id of the movie or show
     let type: String        // "movie" or "series"
     var name: String

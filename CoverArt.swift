@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-extension BrowseCategory.Kind {
+nonisolated extension BrowseCategory.Kind {
     // Shared so the Browse cards and the cover-art loader always agree on which card is which.
     static let trending = BrowseCategory.Kind.keyword(["trend", "featured"])
     static let popular = BrowseCategory.Kind.keyword(["popular", "top"])
@@ -10,12 +10,12 @@ extension BrowseCategory.Kind {
 /// Poster art for the Browse cards, built from the user's own addons, Trakt lists and libraries.
 /// "Continue watching" and "Downloads" are filled live in BrowseView from local data.
 enum CoverArt {
-    static let perCard = 4
+    nonisolated static let perCard = 4
     /// Each card gets a bigger pool than it shows, so BrowseView can skip covers another card already uses.
-    static let pool = 16
+    nonisolated static let pool = 16
 
     /// Swaps small poster sizes for large ones so the cards stay sharp.
-    static func hiRes(_ url: URL) -> URL {
+    nonisolated static func hiRes(_ url: URL) -> URL {
         var s = url.absoluteString
         if s.contains("image.tmdb.org/t/p/") {
             for size in ["w92", "w154", "w185", "w342", "w500"] { s = s.replacingOccurrences(of: "/t/p/\(size)/", with: "/t/p/w780/") }
@@ -26,7 +26,7 @@ enum CoverArt {
     }
 
     /// The biggest version available, for the full-screen cover view.
-    static func ultra(_ url: URL) -> URL {
+    nonisolated static func ultra(_ url: URL) -> URL {
         var s = url.absoluteString
         if s.contains("image.tmdb.org/t/p/") {
             for size in ["w92", "w154", "w185", "w342", "w500", "w780", "w1280"] { s = s.replacingOccurrences(of: "/t/p/\(size)/", with: "/t/p/original/") }

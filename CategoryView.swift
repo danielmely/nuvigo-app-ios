@@ -2,8 +2,8 @@ import SwiftUI
 import Combine
 
 /// Sort and filter choices for a category screen.
-struct ListOptions: Equatable {
-    enum Sort: String, CaseIterable {
+nonisolated struct ListOptions: Equatable {
+    nonisolated enum Sort: String, CaseIterable {
         case standard = "Default"
         case name = "A to Z"
         case newest = "Newest first"

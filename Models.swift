@@ -3,7 +3,7 @@ import Combine
 
 // MARK: - Manifest
 
-struct AddonManifest: Decodable {
+nonisolated struct AddonManifest: Decodable {
     let id: String
     let name: String
     let version: String?
@@ -14,7 +14,7 @@ struct AddonManifest: Decodable {
     let resources: [ResourceDecl]
     let catalogs: [CatalogDecl]
 
-    enum CodingKeys: String, CodingKey {
+    nonisolated enum CodingKeys: String, CodingKey {
         case id, name, version, description, logo, types, idPrefixes, resources, catalogs
     }
 
@@ -33,12 +33,12 @@ struct AddonManifest: Decodable {
 }
 
 /// A resource can be a plain string ("stream") or an object with its own types/prefixes.
-struct ResourceDecl: Decodable {
+nonisolated struct ResourceDecl: Decodable {
     let name: String
     let types: [String]?
     let idPrefixes: [String]?
 
-    private struct Obj: Decodable {
+    nonisolated private struct Obj: Decodable {
         let name: String
         let types: [String]?
         let idPrefixes: [String]?
@@ -55,7 +55,7 @@ struct ResourceDecl: Decodable {
     }
 }
 
-struct CatalogDecl: Decodable, Identifiable {
+nonisolated struct CatalogDecl: Decodable, Identifiable {
     let type: String
     let id: String
     let name: String?
@@ -77,7 +77,7 @@ struct CatalogDecl: Decodable, Identifiable {
     func supportsGenre(_ genre: String) -> Bool { genreOptions.contains(genre) }
 }
 
-struct ExtraDecl: Decodable {
+nonisolated struct ExtraDecl: Decodable {
     let name: String
     let isRequired: Bool?
     let options: [String]?
@@ -85,7 +85,7 @@ struct ExtraDecl: Decodable {
 
 // MARK: - Content
 
-struct MetaItem: Decodable, Identifiable, Hashable {
+nonisolated struct MetaItem: Decodable, Identifiable, Hashable {
     let id: String
     let type: String
     let name: String
@@ -101,7 +101,7 @@ struct MetaItem: Decodable, Identifiable, Hashable {
     func hash(into h: inout Hasher) { h.combine(id); h.combine(type) }
 }
 
-struct Video: Decodable, Identifiable, Hashable {
+nonisolated struct Video: Decodable, Identifiable, Hashable {
     let id: String
     let title: String?
     let name: String?
@@ -123,7 +123,7 @@ struct Video: Decodable, Identifiable, Hashable {
     }
 }
 
-struct Stream: Decodable, Identifiable {
+nonisolated struct Stream: Decodable, Identifiable {
     let url: String?
     let infoHash: String?
     let fileIdx: Int?
@@ -140,13 +140,13 @@ struct Stream: Decodable, Identifiable {
 
 // MARK: - Response wrappers
 
-struct CatalogResponse: Decodable { let metas: [MetaItem] }
-struct MetaResponse: Decodable { let meta: MetaItem }
-struct StreamResponse: Decodable { let streams: [Stream] }
+nonisolated struct CatalogResponse: Decodable { let metas: [MetaItem] }
+nonisolated struct MetaResponse: Decodable { let meta: MetaItem }
+nonisolated struct StreamResponse: Decodable { let streams: [Stream] }
 
 // MARK: - Subtitles
 
-struct SubtitleTrack: Decodable, Hashable {
+nonisolated struct SubtitleTrack: Decodable, Hashable {
     let url: String             // empty for OpenSubtitles tracks until they're resolved with `fileID`
     let lang: String?
     var fileID: Int? = nil      // OpenSubtitles file id
@@ -157,12 +157,12 @@ struct SubtitleTrack: Decodable, Hashable {
     }
 }
 
-struct SubtitleResponse: Decodable { let subtitles: [SubtitleTrack] }
+nonisolated struct SubtitleResponse: Decodable { let subtitles: [SubtitleTrack] }
 
 // MARK: - Playback
 
 /// Everything the player needs to know about what is playing.
-struct PlaybackContext {
+nonisolated struct PlaybackContext {
     let key: String             // stream id: movie id, or episode id like "tt123:1:2"
     let item: MetaItem          // the parent title
     let episodeLabel: String?   // "S1E2 · Title"
@@ -172,7 +172,7 @@ struct PlaybackContext {
 // MARK: - Language preferences
 
 /// Normalises the 2- and 3-letter language codes that addons and video files use, so "eng" and "en" match.
-enum LanguagePref {
+nonisolated enum LanguagePref {
     static let choices: [(code: String, name: String)] = [
         ("en", "English"), ("es", "Spanish"), ("fr", "French"), ("de", "German"), ("it", "Italian"),
         ("pt", "Portuguese"), ("ja", "Japanese"), ("ko", "Korean"), ("zh", "Chinese"), ("ru", "Russian"),

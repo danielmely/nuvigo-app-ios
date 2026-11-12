@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 /// IMDb and Rotten Tomatoes ratings (plus a plot summary), from OMDb.
-struct TitleRatings: Codable {
+nonisolated struct TitleRatings: Codable {
     var imdb: String?      // "8.8"
     var votes: String?     // "2.7M"
     var tomatoes: String?  // "87%"
@@ -12,7 +12,7 @@ struct TitleRatings: Codable {
     var cast: [String] = [] // first three actors
 }
 
-enum Ratings {
+nonisolated enum Ratings {
     static var isConfigured: Bool { OMDbKey.isSet }
     private nonisolated(unsafe) static var cache: [String: TitleRatings] = loadDisk()
     private static let lock = NSLock()

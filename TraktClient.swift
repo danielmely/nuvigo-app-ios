@@ -13,7 +13,7 @@ enum TraktConfig {
 
 // MARK: - Models
 
-struct TraktToken: Codable {
+nonisolated struct TraktToken: Codable {
     let access_token: String
     let refresh_token: String
     let expires_in: Int
@@ -24,7 +24,7 @@ struct TraktToken: Codable {
     var needsRefresh: Bool { expiryDate.timeIntervalSinceNow < 86_400 }
 }
 
-struct TraktDeviceCode: Decodable {
+nonisolated struct TraktDeviceCode: Decodable {
     let device_code: String
     let user_code: String
     let verification_url: String
@@ -32,19 +32,19 @@ struct TraktDeviceCode: Decodable {
     let interval: Int
 }
 
-struct TraktListEntry: Hashable {
+nonisolated struct TraktListEntry: Hashable {
     let type: String   // "movie" or "series" (addon terms)
     let id: String     // IMDb id
 }
 
 /// What is being watched, in addon terms: type ("movie"/"series") and the stream id
 /// (movie: "tt1234567", episode: "tt1234567:1:2").
-struct ScrobbleTarget {
+nonisolated struct ScrobbleTarget {
     let type: String
     let id: String
 }
 
-struct TraktUpcoming: Identifiable {
+nonisolated struct TraktUpcoming: Identifiable {
     let imdb: String
     let showTitle: String
     let season: Int

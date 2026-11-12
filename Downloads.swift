@@ -5,9 +5,9 @@ import UIKit
 
 // MARK: - Model
 
-struct DownloadEntry: Codable, Identifiable, Hashable {
-    enum State: String, Codable { case downloading, done, failed }
-    enum Kind: String, Codable { case file, hls }
+nonisolated struct DownloadEntry: Codable, Identifiable, Hashable {
+    nonisolated enum State: String, Codable { case downloading, done, failed }
+    nonisolated enum Kind: String, Codable { case file, hls }
 
     let id: String             // the stream key: movie id, or episode id like "tt123:1:2"
     let itemID: String
@@ -33,7 +33,7 @@ struct DownloadEntry: Codable, Identifiable, Hashable {
 }
 
 /// Where downloaded files live. Marked "do not back up", since they can be downloaded again.
-enum DownloadPaths {
+nonisolated enum DownloadPaths {
     static let folder: URL = {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         var dir = base.appendingPathComponent("Downloads", isDirectory: true)
@@ -292,7 +292,8 @@ extension DownloadManager: URLSessionDownloadDelegate, AVAssetDownloadDelegate {
         let home = NSHomeDirectory()
         if path.hasPrefix(home) { path = String(path.dropFirst(home.count)) }
         let size = DownloadPaths.size(of: location)
-        Task { @MainActor in self.finish(key, fileName: nil, relativePath: path, bytes: size) }
+        let relativePath = path
+        Task { @MainActor in self.finish(key, fileName: nil, relativePath: relativePath, bytes: size) }
     }
 }
 

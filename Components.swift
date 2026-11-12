@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-struct CatalogRow: Identifiable {
+nonisolated struct CatalogRow: Identifiable {
     let id: String
     let title: String
     let type: String

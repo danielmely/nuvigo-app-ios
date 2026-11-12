@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-struct SubtitleCue {
+nonisolated struct SubtitleCue {
     let start: TimeInterval
     let end: TimeInterval
     let text: String

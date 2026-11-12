@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import SafariServices
 
-struct StreamEntry: Identifiable {
+nonisolated struct StreamEntry: Identifiable {
     let id = UUID()
     let addon: String
     let stream: Stream
