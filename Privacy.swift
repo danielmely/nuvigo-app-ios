@@ -6,11 +6,11 @@ import CryptoKit
 // MARK: - Settings keys
 
 enum PrivacyKeys {
-    static let appLock = "appLockEnabled"
-    static let hideInSwitcher = "hideInSwitcher"
-    static let privateMode = "privateMode"
-    static let profiles = "profilesJSON"
-    static let activeProfile = "activeProfileID"
+    nonisolated static let appLock = "appLockEnabled"
+    nonisolated static let hideInSwitcher = "hideInSwitcher"
+    nonisolated static let privateMode = "privateMode"
+    nonisolated static let profiles = "profilesJSON"
+    nonisolated static let activeProfile = "activeProfileID"
 }
 
 /// Private mode: nothing you watch is remembered. No progress, no Watched list, no Trakt/Simkl/AniList/MAL updates.
@@ -38,8 +38,8 @@ struct Profile: Codable, Identifiable, Hashable {
 /// PG-13, R, NC-17 and Unrated titles on top of the Hide by rating switches.
 @MainActor
 final class ProfileStore: ObservableObject {
-    static let mainID = "main"
-    static let kidsHidden: Set<String> = ["PG-13", "R", "NC-17", "Unrated"]
+    nonisolated static let mainID = "main"
+    nonisolated static let kidsHidden: Set<String> = ["PG-13", "R", "NC-17", "Unrated"]
 
     @Published private(set) var profiles: [Profile] = []
     @Published private(set) var activeID: String = ProfileStore.mainID
