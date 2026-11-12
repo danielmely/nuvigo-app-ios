@@ -59,6 +59,35 @@
         }
       }
     },
+    "6-digit code": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código de 6 dígitos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code à 6 chiffres"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6桁のコード"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 位验证码"
+          }
+        }
+      }
+    },
     "A coffee": {
       "extractionState": "manual",
       "localizations": {
@@ -2002,6 +2031,35 @@
         }
       }
     },
+    "Forgot password?": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Olvidaste tu contraseña?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mot de passe oublié ?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パスワードをお忘れですか？"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "忘记密码？"
+          }
+        }
+      }
+    },
     "Genres": {
       "extractionState": "manual",
       "localizations": {
@@ -2433,6 +2491,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "IMDb 和 Rotten Tomatoes 评分。请添加免费密钥。"
+          }
+        }
+      }
+    },
+    "If an account exists for that email, a code is on its way. Check your spam folder too.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si existe una cuenta con ese correo, el código va en camino. Revisa también la carpeta de spam."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si un compte existe pour cet e-mail, un code est en route. Vérifiez aussi vos courriers indésirables."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "そのメールアドレスのアカウントがある場合、コードが送信されます。迷惑メールフォルダもご確認ください。"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果该邮箱存在账户，验证码已在发送途中。请同时检查垃圾邮件文件夹。"
           }
         }
       }
@@ -3274,6 +3361,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "新剧集提醒"
+          }
+        }
+      }
+    },
+    "New password (8+ characters)": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva contraseña (8+ caracteres)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau mot de passe (8 caractères ou plus)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しいパスワード（8文字以上）"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新密码（8 个字符以上）"
           }
         }
       }
@@ -4728,6 +4844,35 @@
         }
       }
     },
+    "Reset password": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer contraseña"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser le mot de passe"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パスワードをリセット"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置密码"
+          }
+        }
+      }
+    },
     "Reset to default": {
       "extractionState": "manual",
       "localizations": {
@@ -4902,6 +5047,35 @@
         }
       }
     },
+    "Send a new code": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar un código nuevo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyer un nouveau code"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しいコードを送信"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送新的验证码"
+          }
+        }
+      }
+    },
     "Send anonymous error reports": {
       "extractionState": "manual",
       "localizations": {
@@ -4927,6 +5101,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "发送匿名错误报告"
+          }
+        }
+      }
+    },
+    "Send code": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar código"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyer le code"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コードを送信"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送验证码"
           }
         }
       }
@@ -5043,6 +5246,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "设置 PIN"
+          }
+        }
+      }
+    },
+    "Set new password": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Establecer nueva contraseña"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Définir le nouveau mot de passe"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しいパスワードを設定"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置新密码"
           }
         }
       }
@@ -6957,6 +7189,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "待看清单"
+          }
+        }
+      }
+    },
+    "We'll email you a 6-digit code. It works for 15 minutes.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te enviaremos un código de 6 dígitos por correo. Es válido durante 15 minutos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nous vous enverrons un code à 6 chiffres par e-mail. Il est valable 15 minutes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6桁のコードをメールでお送りします。有効期間は15分です。"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我们会通过邮件向你发送 6 位验证码，15 分钟内有效。"
           }
         }
       }

@@ -40,6 +40,50 @@ final class NuviAccount: ObservableObject {
     func signUp(email: String, password: String) async -> Bool { await authenticate("register", email, password) }
     func signIn(email: String, password: String) async -> Bool { await authenticate("login", email, password) }
 
+    private func finishSignIn(token t: String, user: [String: Any]?, fallbackEmail: String) {
+        token = t
+        self.email = (user?["email"] as? String) ?? fallbackEmail
+        Keychain.save(Data(t.utf8), key: tokenKey)
+        UserDefaults.standard.set(self.email, forKey: emailKey)
+    }
+
+    // MARK: Password reset
+
+    /// Emails a 6-digit code. The server answers the same whether or not the address has an account.
+    func requestPasswordReset(email: String) async -> Bool {
+        error = nil
+        guard isConfigured else { error = "Add your server address in Config.swift first."; return false }
+        busy = true
+        defer { busy = false }
+        guard let (status, obj) = await request("POST", "/api/auth/forgot", body: ["email": email], authorized: false) else {
+            error = "Couldn't reach the NuviGo server."
+            return false
+        }
+        guard status == 200 else {
+            error = (obj?["error"] as? String) ?? "That didn't work. Try again."
+            return false
+        }
+        return true
+    }
+
+    /// Sets a new password with the emailed code, and signs in.
+    func resetPassword(email: String, code: String, password: String) async -> Bool {
+        error = nil
+        busy = true
+        defer { busy = false }
+        guard let (status, obj) = await request("POST", "/api/auth/reset",
+                                                body: ["email": email, "code": code, "password": password], authorized: false) else {
+            error = "Couldn't reach the NuviGo server."
+            return false
+        }
+        guard status == 200, let t = obj?["token"] as? String else {
+            error = (obj?["error"] as? String) ?? "That didn't work. Try again."
+            return false
+        }
+        finishSignIn(token: t, user: obj?["user"] as? [String: Any], fallbackEmail: email)
+        return true
+    }
+
     private func authenticate(_ action: String, _ email: String, _ password: String) async -> Bool {
         error = nil
         guard isConfigured else { error = "Add your server address in Config.swift first."; return false }
@@ -53,10 +97,7 @@ final class NuviAccount: ObservableObject {
             error = (obj?["error"] as? String) ?? "That didn't work. Try again."
             return false
         }
-        token = t
-        self.email = ((obj?["user"] as? [String: Any])?["email"] as? String) ?? email
-        Keychain.save(Data(t.utf8), key: tokenKey)
-        UserDefaults.standard.set(self.email, forKey: emailKey)
+        finishSignIn(token: t, user: obj?["user"] as? [String: Any], fallbackEmail: email)
         return true
     }
 

@@ -73,6 +73,7 @@ struct SignInSheet: View {
     @State private var creating = false
     @State private var email = ""
     @State private var password = ""
+    @State private var showReset = false
 
     private var canSubmit: Bool { email.contains("@") && password.count >= (creating ? 8 : 1) && !account.busy }
 
@@ -116,7 +117,15 @@ struct SignInSheet: View {
                         }
                     }
                     .disabled(!canSubmit)
+
+                    if !creating {
+                        Button("Forgot password?") { showReset = true }
+                            .font(.footnote)
+                    }
                 }
+            }
+            .sheet(isPresented: $showReset) {
+                ForgotPasswordSheet(email: email) { dismiss() }
             }
             .navigationTitle(creating ? "Create account" : "Sign in")
             .navigationBarTitleDisplayMode(.inline)
@@ -142,5 +151,100 @@ struct AccountPerksSection: View {
         }
         .font(.footnote)
         .lineSpacing(3)
+    }
+}
+
+
+/// Two steps: ask for a code by email, then enter the code and a new password.
+struct ForgotPasswordSheet: View {
+    @EnvironmentObject var account: NuviAccount
+    @EnvironmentObject var store: AddonStore
+    @EnvironmentObject var progress: ProgressStore
+    @Environment(\.dismiss) private var dismiss
+
+    @State var email: String
+    let onSignedIn: () -> Void
+    @State private var codeSent = false
+    @State private var code = ""
+    @State private var password = ""
+
+    init(email: String, onSignedIn: @escaping () -> Void) {
+        _email = State(initialValue: email)
+        self.onSignedIn = onSignedIn
+    }
+
+    private var canSend: Bool { email.contains("@") && !account.busy }
+    private var canReset: Bool { code.count == 6 && password.count >= 8 && !account.busy }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Email", text: $email)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .textContentType(.username)
+                        .disabled(codeSent)
+                } footer: {
+                    if !codeSent { Text("We'll email you a 6-digit code. It works for 15 minutes.") }
+                }
+
+                if !codeSent {
+                    Section {
+                        Button {
+                            Task { if await account.requestPasswordReset(email: email) { codeSent = true } }
+                        } label: {
+                            HStack {
+                                Spacer()
+                                if account.busy { ProgressView() } else { Text("Send code").bold() }
+                                Spacer()
+                            }
+                        }
+                        .disabled(!canSend)
+                    } footer: {
+                        if let e = account.error { Text(e).foregroundStyle(.red) }
+                    }
+                } else {
+                    Section {
+                        TextField("6-digit code", text: $code)
+                            .keyboardType(.numberPad)
+                            .textContentType(.oneTimeCode)
+                            .onChange(of: code) { _, v in code = String(v.filter(\.isNumber).prefix(6)) }
+                        SecureField("New password (8+ characters)", text: $password)
+                            .textContentType(.newPassword)
+                    } footer: {
+                        if let e = account.error { Text(e).foregroundStyle(.red) }
+                        else { Text("If an account exists for that email, a code is on its way. Check your spam folder too.") }
+                    }
+                    Section {
+                        Button {
+                            Task {
+                                if await account.resetPassword(email: email, code: code, password: password) {
+                                    await account.sync(store: store, progress: progress, force: true)
+                                    dismiss()
+                                    onSignedIn()
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Spacer()
+                                if account.busy { ProgressView() } else { Text("Set new password").bold() }
+                                Spacer()
+                            }
+                        }
+                        .disabled(!canReset)
+                        Button("Send a new code") {
+                            Task { _ = await account.requestPasswordReset(email: email) }
+                        }
+                        .disabled(account.busy)
+                    }
+                }
+            }
+            .navigationTitle("Reset password")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
+            .onAppear { account.error = nil }
+        }
     }
 }
