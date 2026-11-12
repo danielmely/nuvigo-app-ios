@@ -81,7 +81,6 @@ struct DetailView: View {
         .controlSize(.regular)
     }
 
-    @ViewBuilder
     /// Opens this title on IMDb (the ids are IMDb ids), or a search if the id isn't one.
     private var imdbURL: URL {
         if shown.id.hasPrefix("tt"), let u = URL(string: "https://www.imdb.com/title/\(shown.id.prefix(while: { $0 != ":" }))/") { return u }
@@ -94,6 +93,7 @@ struct DetailView: View {
         return URL(string: "https://www.rottentomatoes.com/search?search=\(q)")!
     }
 
+    @ViewBuilder
     private var ratingsRow: some View {
         if let r = ratings, r.imdb != nil || r.tomatoes != nil {
             HStack(spacing: 16) {
@@ -260,7 +260,7 @@ struct DetailView: View {
         }
         .task { await loadMeta() }
         .task { ratings = await Ratings.load(imdbID: shown.id) }
-        .task(id: shown.id) { trailerKey = await tmdb.trailerKey(for: shown) }
+        .task(id: shown.id) { trailerKey = await services.tmdb.trailerKey(for: shown) }
         .sheet(isPresented: $showTrailer) {
             if let key = trailerKey, let url = URL(string: "https://www.youtube.com/watch?v=\(key)") {
                 SafariView(url: url).ignoresSafeArea()

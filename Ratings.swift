@@ -25,17 +25,17 @@ enum Ratings {
     }
     /// Keeps looked-up ratings between launches (it lives in Caches, so Clear cache wipes it).
     static func persist() {
-        lock.lock(); let snapshot = cache; lock.unlock()
+        let snapshot = lock.withLock { cache }
         if let d = try? JSONEncoder().encode(snapshot) { try? d.write(to: diskURL, options: .atomic) }
     }
     static func clearCache() {
-        lock.lock(); cache = [:]; lock.unlock()
+        lock.withLock { cache = [:] }
         try? FileManager.default.removeItem(at: diskURL)
     }
 
     static func load(imdbID: String) async -> TitleRatings? {
         guard isConfigured, imdbID.hasPrefix("tt") else { return nil }
-        lock.lock(); let hit = cache[imdbID]; lock.unlock()
+        let hit = lock.withLock { cache[imdbID] }
         if let hit { return hit }
         guard let url = HTTP.url("https://www.omdbapi.com/", query: ["apikey": OMDbKey.value, "i": imdbID, "plot": "short"]),
               let (status, data) = try? await HTTP.send(url), status == 200,
@@ -57,7 +57,7 @@ enum Ratings {
         for r in (obj["Ratings"] as? [[String: Any]]) ?? [] where (r["Source"] as? String) == "Rotten Tomatoes" {
             out.tomatoes = clean(r["Value"])
         }
-        lock.lock(); cache[imdbID] = out; lock.unlock()
+        lock.withLock { cache[imdbID] = out }
         return out
     }
 
