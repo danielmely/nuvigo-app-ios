@@ -85,6 +85,17 @@ nonisolated struct ExtraDecl: Decodable {
 
 // MARK: - Content
 
+/// Decodes a value an add-on may send as either a string or a number.
+nonisolated struct FlexString: Decodable, Hashable {
+    let value: String
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if let s = try? c.decode(String.self) { value = s }
+        else if let d = try? c.decode(Double.self) { value = String(format: "%.1f", d) }
+        else { value = "" }
+    }
+}
+
 nonisolated struct MetaItem: Decodable, Identifiable, Hashable {
     let id: String
     let type: String
@@ -96,6 +107,8 @@ nonisolated struct MetaItem: Decodable, Identifiable, Hashable {
     let runtime: String?
     let genres: [String]?
     let videos: [Video]?
+    /// IMDb rating the add-on itself supplies (Cinemeta does), used when there's no OMDb key.
+    var imdbRating: FlexString? = nil
 
     static func == (l: MetaItem, r: MetaItem) -> Bool { l.id == r.id && l.type == r.type }
     func hash(into h: inout Hasher) { h.combine(id); h.combine(type) }

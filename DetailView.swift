@@ -94,8 +94,15 @@ struct DetailView: View {
     }
 
     @ViewBuilder
+    /// OMDb ratings when you've added a key, otherwise the IMDb rating the add-on supplies.
+    private var effectiveRatings: TitleRatings? {
+        var r = ratings ?? TitleRatings()
+        if r.imdb == nil, let v = shown.imdbRating?.value, !v.isEmpty, v != "N/A" { r.imdb = v }
+        return r
+    }
+
     private var ratingsRow: some View {
-        if let r = ratings, r.imdb != nil || r.tomatoes != nil {
+        if let r = effectiveRatings, r.imdb != nil || r.tomatoes != nil {
             HStack(spacing: 16) {
                 if let imdb = r.imdb {
                     Link(destination: imdbURL) {
