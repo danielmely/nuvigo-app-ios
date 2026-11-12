@@ -35,7 +35,7 @@ final class AddonStore: ObservableObject {
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: cloud, queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in await self?.cloudDidChange() }
+            Task { @MainActor [weak self] in await self?.cloudDidChange() }
         }
         cloud.synchronize()
     }

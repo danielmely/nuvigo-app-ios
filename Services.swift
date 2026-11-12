@@ -46,10 +46,10 @@ final class Services: ObservableObject {
 
         // Reload the folder list when a server is connected or disconnected.
         jellyfin.$session.dropFirst().sink { [weak self] _ in
-            Task { @MainActor in await self?.refreshLibraries() }
+            Task { @MainActor [weak self] in await self?.refreshLibraries() }
         }.store(in: &bag)
         plex.$session.dropFirst().sink { [weak self] _ in
-            Task { @MainActor in await self?.refreshLibraries() }
+            Task { @MainActor [weak self] in await self?.refreshLibraries() }
         }.store(in: &bag)
     }
 

@@ -42,7 +42,7 @@ final class ContentFilter: ObservableObject {
         reloadHidden()
         // Picks up changes made by an account sync or a reset.
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            Task { @MainActor in self?.reloadHidden() }
+            Task { @MainActor [weak self] in self?.reloadHidden() }
         }
     }
 
