@@ -24,6 +24,7 @@ struct AccountView: View {
                     AppearanceSection()
                     AppIconSection()
                     StatsLinkSection()
+                    DataPortabilitySection()
                     PlaybackSettingsSection()
                     SubtitleStyleSection()
                     EpisodeAlertsSection()

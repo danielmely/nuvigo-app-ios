@@ -86,6 +86,25 @@ final class WatchedStore: ObservableObject {
         if added { items.sort { $0.date > $1.date }; persist() }
     }
 
+    /// Adds titles from a backup or an import. Existing titles are kept (they only gain a rating they lacked).
+    /// Returns how many were new.
+    @discardableResult
+    func merge(_ incoming: [WatchedItem]) -> Int {
+        var added = 0
+        for n in incoming {
+            if let i = items.firstIndex(where: { $0.id == n.id }) {
+                if items[i].rating == nil, let r = n.rating { items[i].rating = r }
+                continue
+            }
+            hidden.remove(n.id)
+            items.append(n)
+            added += 1
+        }
+        items.sort { $0.date > $1.date }
+        persist()
+        return added
+    }
+
     private func persist() {
         if let data = try? JSONEncoder().encode(items) { UserDefaults.standard.set(data, forKey: itemsKey) }
         UserDefaults.standard.set(Array(hidden), forKey: hiddenKey)
