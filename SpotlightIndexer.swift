@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import CoreSpotlight
+@preconcurrency import CoreSpotlight
 import UniformTypeIdentifiers
 
 /// Lets you find your in-progress and watched titles from the iPhone's own search.
