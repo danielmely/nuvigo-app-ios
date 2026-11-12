@@ -151,6 +151,7 @@ struct DetailView: View {
                             Text(shown.name).font(.title3.weight(.semibold))
                             let info = [shown.releaseInfo, shown.genres?.first, shown.runtime].compactMap { $0 }.joined(separator: " · ")
                             if !info.isEmpty { Text(info).font(.subheadline).foregroundStyle(.secondary) }
+                            ratingsRow
                             if let d = ratings?.director {
                                 Text("Directed by \(d)").font(.subheadline)
                             }
@@ -169,7 +170,6 @@ struct DetailView: View {
                             .lineLimit(descriptionExpanded ? nil : 8)
                             .onTapGesture { withAnimation { descriptionExpanded.toggle() } }
                     }
-                    ratingsRow
                 }
             }
 
