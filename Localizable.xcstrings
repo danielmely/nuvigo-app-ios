@@ -3916,6 +3916,64 @@
         }
       }
     },
+    "Official catalogs, posters and descriptions for movies and shows.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catálogos, carteles y descripciones oficiales de películas y series."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catalogues, affiches et descriptions officiels pour les films et séries."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "映画やシリーズの公式カタログ、ポスター、あらすじ。"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电影和剧集的官方目录、海报和简介。"
+          }
+        }
+      }
+    },
+    "Official subtitles in many languages.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subtítulos oficiales en muchos idiomas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sous-titres officiels dans de nombreuses langues."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "多くの言語の公式字幕。"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "多种语言的官方字幕。"
+          }
+        }
+      }
+    },
     "Only install addons from sources you trust. NuviGo doesn't provide any addons itself.": {
       "extractionState": "manual",
       "localizations": {
@@ -5362,6 +5420,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "剧集"
+          }
+        }
+      }
+    },
+    "Shows which services stream a title, like Netflix or Hulu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra qué servicios ofrecen un título, como Netflix o Hulu."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indique quels services proposent un titre, comme Netflix ou Hulu."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NetflixやHuluなど、作品を配信しているサービスを表示します。"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示哪些服务提供某部作品，例如 Netflix 或 Hulu。"
           }
         }
       }

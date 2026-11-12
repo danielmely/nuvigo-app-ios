@@ -56,21 +56,36 @@ struct AddonsView: View {
     @State private var input = ""
     @State private var error: String?
     @State private var adding = false
+    @State private var installing: Set<String> = []
 
     private func addons(in tier: AddonTier) -> [Addon] { store.addons.filter { AddonTier.of($0) == tier } }
 
-    /// Things worth connecting that the person hasn't yet. Each row opens the Account tab, where they are set up.
+    /// Things worth connecting that the person hasn't yet. A row with an address installs that official add-on in one tap;
+    /// any other row opens the Account tab, where the service is set up.
     private struct Suggestion: Identifiable {
         let name: String
         let icon: String
         let blurb: LocalizedStringKey
+        var installURL: String? = nil
         var id: String { name }
+    }
+
+    /// Stremio's own add-ons. Matched by their manifest id, so one already installed from anywhere is not suggested again.
+    private func officialSuggestion(id: String, name: String, icon: String, blurb: LocalizedStringKey, url: String) -> Suggestion? {
+        store.addons.contains(where: { $0.manifest.id == id }) ? nil
+            : Suggestion(name: name, icon: icon, blurb: blurb, installURL: url)
     }
 
     private func suggestions(for tier: AddonTier) -> [Suggestion] {
         switch tier {
         case .essential:
             var out: [Suggestion] = []
+            if let s = officialSuggestion(id: "com.linvo.cinemeta", name: "Cinemeta", icon: "film.stack",
+                                          blurb: "Official catalogs, posters and descriptions for movies and shows.",
+                                          url: "https://v3-cinemeta.strem.io/manifest.json") { out.append(s) }
+            if let s = officialSuggestion(id: "org.stremio.watchhub", name: "WatchHub", icon: "play.tv",
+                                          blurb: "Shows which services stream a title, like Netflix or Hulu.",
+                                          url: "https://watchhub.strem.io/manifest.json") { out.append(s) }
             if !OMDbKey.hasOwn {
                 out.append(Suggestion(name: "OMDb", icon: "star.bubble", blurb: "IMDb and Rotten Tomatoes ratings. Add a free key."))
             }
@@ -87,13 +102,45 @@ struct AddonsView: View {
                 out.append(Suggestion(name: "Jellyfin", icon: "server.rack", blurb: "Watch your own Jellyfin libraries here."))
             }
             return out
+        case .subtitles:
+            if let s = officialSuggestion(id: "org.stremio.opensubtitlesv3", name: "OpenSubtitles", icon: "captions.bubble",
+                                          blurb: "Official subtitles in many languages.",
+                                          url: "https://opensubtitles-v3.strem.io/manifest.json") { return [s] }
+            return []
         default:
             return []
         }
     }
 
+    @ViewBuilder
     private func suggestionRow(_ s: Suggestion) -> some View {
-        Button { DeepLink.shared.openTab(3) } label: {
+        if let url = s.installURL {
+            HStack(spacing: 12) {
+                suggestionLabel(s)
+                Spacer(minLength: 0)
+                if installing.contains(url) {
+                    ProgressView()
+                } else {
+                    Button("Install") { Task { await install(url) } }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                }
+            }
+        } else {
+            Button { DeepLink.shared.openTab(3) } label: {
+                HStack(spacing: 12) {
+                    suggestionLabel(s)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                }
+                .contentShape(Rectangle())
+            }
+            .accessibilityHint("Opens Account to set it up")
+        }
+    }
+
+    private func suggestionLabel(_ s: Suggestion) -> some View {
+        Group {
             HStack(spacing: 12) {
                 Image(systemName: s.icon)
                     .foregroundStyle(Theme.accent)
@@ -108,12 +155,17 @@ struct AddonsView: View {
                     }
                     Text(s.blurb).font(.footnote).foregroundStyle(.secondary)
                 }
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
             }
-            .contentShape(Rectangle())
         }
-        .accessibilityHint("Opens Account to set it up")
+    }
+
+    private func install(_ url: String) async {
+        installing.insert(url); error = nil
+        defer { installing.remove(url) }
+        do { try await store.add(url) } catch {
+            self.error = error.localizedDescription
+            ErrorReporter.report("Suggested add-on install failed: \(error.localizedDescription)", kind: "addon")
+        }
     }
 
     var body: some View {
