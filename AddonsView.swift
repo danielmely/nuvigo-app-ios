@@ -95,6 +95,9 @@ struct AddonsView: View {
             if let s = officialSuggestion(id: "org.stremio.watchhub", name: "WatchHub", icon: "play.tv",
                                           blurb: "Shows which services stream a title, like Netflix or Hulu.",
                                           url: "https://watchhub.strem.io/manifest.json") { out.append(s) }
+            if let s = officialSuggestion(id: "org.stremio.opensubtitlesv3", name: "OpenSubtitles", icon: "captions.bubble",
+                                          blurb: "Official subtitles in many languages.",
+                                          url: "https://opensubtitles-v3.strem.io/manifest.json") { out.append(s) }
             if !OMDbKey.hasOwn {
                 out.append(Suggestion(name: "OMDb", icon: "star.bubble", blurb: "IMDb and Rotten Tomatoes ratings. Add a free key.", key: .omdb))
             }
@@ -111,11 +114,6 @@ struct AddonsView: View {
                 out.append(Suggestion(name: "Jellyfin", icon: "server.rack", blurb: "Watch your own Jellyfin libraries here."))
             }
             return out
-        case .subtitles:
-            if let s = officialSuggestion(id: "org.stremio.opensubtitlesv3", name: "OpenSubtitles", icon: "captions.bubble",
-                                          blurb: "Official subtitles in many languages.",
-                                          url: "https://opensubtitles-v3.strem.io/manifest.json") { return [s] }
-            return []
         default:
             return []
         }
