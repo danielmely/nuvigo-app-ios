@@ -10,7 +10,7 @@ import Combine
 import KSPlayer
 #endif
 
-enum AltEngine {
+nonisolated enum AltEngine {
     static let extensions: Set<String> = ["mkv", "avi", "webm", "flv", "wmv", "ts", "m2ts", "divx", "ogv"]
 
     static var isAvailable: Bool {
