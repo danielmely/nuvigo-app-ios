@@ -37,6 +37,15 @@ struct NuviAccountSection: View {
                 if let e = account.error { Text(e).font(.footnote).foregroundStyle(.red) }
                 Button("Sign out", role: .destructive) { account.signOut() }
                 Button("Delete account…", role: .destructive) { deletePassword = ""; confirmDelete = true }
+                    .alert("Delete your account?", isPresented: $confirmDelete) {
+                        SecureField("Password", text: $deletePassword)
+                        Button("Delete", role: .destructive) {
+                            Task { _ = await account.deleteAccount(password: deletePassword) }
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text("This removes your NuviGo account and the synced copy on the server. What's on this device stays. Enter your password to confirm.")
+                    }
             } else {
                 Text("Sign in to keep your addons, watch progress, settings and linked logins on every device.")
                     .font(.footnote)
@@ -45,21 +54,12 @@ struct NuviAccountSection: View {
                 } label: {
                     Label("Sign in or create account", systemImage: "person.crop.circle.badge.plus")
                 }
+                .sheet(isPresented: $showSignIn) { SignInSheet() }
             }
         } footer: {
             if account.isSignedIn {
                 Text("Syncs your addon list, watch progress, appearance and playback settings, and your linked logins. Your Trakt watchlist travels with your Trakt login.")
             }
-        }
-        .sheet(isPresented: $showSignIn) { SignInSheet() }
-        .alert("Delete your account?", isPresented: $confirmDelete) {
-            SecureField("Password", text: $deletePassword)
-            Button("Delete", role: .destructive) {
-                Task { _ = await account.deleteAccount(password: deletePassword) }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This removes your NuviGo account and the synced copy on the server. What's on this device stays. Enter your password to confirm.")
         }
     }
 }
