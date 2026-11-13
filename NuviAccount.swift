@@ -262,9 +262,17 @@ final class NuviAccount: ObservableObject {
 
     // MARK: Network
 
+    /// The server address with `https://` added if it's missing and any trailing slash removed.
+    private static var serverBase: String {
+        var base = Config.serverURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !base.lowercased().hasPrefix("http") { base = "https://" + base }
+        while base.hasSuffix("/") { base.removeLast() }
+        return base
+    }
+
     private func request(_ method: String, _ path: String, body: [String: Any]? = nil,
                          authorized: Bool = true) async -> (Int, [String: Any]?)? {
-        guard let url = URL(string: Config.serverURL + path) else { return nil }
+        guard let url = URL(string: Self.serverBase + path) else { return nil }
         var headers = ["Content-Type": "application/json"]
         if authorized, let token { headers["Authorization"] = "Bearer \(token)" }
         guard let (status, data) = try? await HTTP.send(url, method: method, headers: headers,
