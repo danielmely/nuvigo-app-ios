@@ -59,6 +59,37 @@ struct AddonsView: View {
     @State private var error: String?
     @State private var adding = false
     @State private var installing: Set<String> = []
+    /// Which dropdowns are open. Every group starts closed so the page stays short.
+    @State private var openGroups: Set<String> = []
+
+    private func isOpen(_ key: String) -> Bool { openGroups.contains(key) }
+    private func toggle(_ key: String) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            if openGroups.contains(key) { openGroups.remove(key) } else { openGroups.insert(key) }
+        }
+    }
+    private func dropdownHeader(_ key: String, icon: String? = nil, title: String, badge: String? = nil, highlight: Bool = false) -> some View {
+        Button { toggle(key) } label: {
+            HStack(spacing: 8) {
+                if let icon { Image(systemName: icon).font(.title3).foregroundStyle(Theme.accent) }
+                Text(title).font(.title3.weight(.bold)).foregroundStyle(.primary)
+                Spacer()
+                if let badge {
+                    Text(badge).font(.footnote.weight(.semibold)).foregroundStyle(.primary)
+                        .padding(.horizontal, 8).padding(.vertical, 2)
+                        .background(highlight ? Theme.accent.opacity(0.2) : Color.secondary.opacity(0.15), in: Capsule())
+                }
+                Image(systemName: "chevron.right").font(.body.weight(.bold)).foregroundStyle(.secondary)
+                    .rotationEffect(.degrees(isOpen(key) ? 90 : 0))
+            }
+            .textCase(nil)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityValue(isOpen(key) ? "Expanded" : "Collapsed")
+        .accessibilityHint("Double tap to \(isOpen(key) ? "collapse" : "expand")")
+    }
 
     private func addons(in tier: AddonTier) -> [Addon] { store.addons.filter { AddonTier.of($0) == tier } }
 
@@ -198,6 +229,7 @@ struct AddonsView: View {
                     let suggested = suggestions(for: tier)
                     if !list.isEmpty || !servers.isEmpty || !suggested.isEmpty {
                         Section {
+                            if isOpen("tier\(tier.rawValue)") {
                             ForEach(list) { addon in
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(addon.manifest.name).font(.headline)
@@ -214,23 +246,18 @@ struct AddonsView: View {
                                 Label(f.title, systemImage: "server.rack")
                             }
                             ForEach(suggested) { suggestionRow($0) }
-                        } header: {
-                            HStack(spacing: 8) {
-                                Image(systemName: tier.icon).font(.title3).foregroundStyle(Theme.accent)
-                                Text(tier.title).font(.title3.weight(.bold))
-                                Spacer()
-                                Text(tier.level).font(.footnote.weight(.semibold))
-                                    .padding(.horizontal, 8).padding(.vertical, 2)
-                                    .background(tier == .essential ? Theme.accent.opacity(0.2) : Color.secondary.opacity(0.15), in: Capsule())
                             }
-                            .textCase(nil)
+                        } header: {
+                            dropdownHeader("tier\(tier.rawValue)", icon: tier.icon, title: tier.title,
+                                           badge: tier.level, highlight: tier == .essential)
                         } footer: {
-                            Text(tier.blurb)
+                            if isOpen("tier\(tier.rawValue)") { Text(tier.blurb) }
                         }
                     }
                 }
 
                 Section {
+                    if isOpen("add") {
                     TextField("Paste addon URL", text: $input)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
@@ -248,21 +275,24 @@ struct AddonsView: View {
                     NavigationLink { AddonDisclosuresView() } label: {
                         Label("Add-on Disclosures", systemImage: "exclamationmark.shield")
                     }
+                    }
                 } header: {
-                    Text("Add an addon").font(.title3.weight(.bold)).textCase(nil)
+                    dropdownHeader("add", title: "Add an addon")
                 }
 
                 Section {
+                    if isOpen("vpn") {
                     ForEach(RecommendedVPN.picks) { vpn in
                         Link(destination: vpn.url) {
                             BottomRowLabel(icon: vpn.icon, title: LocalizedStringKey(vpn.name),
                                            caption: "\(vpn.tag). \(vpn.blurb)", external: true)
                         }
                     }
+                    }
                 } header: {
-                    Text("Recommended VPNs").font(.title3.weight(.bold)).textCase(nil)
+                    dropdownHeader("vpn", title: "Recommended VPNs")
                 } footer: {
-                    Text("NuviGo doesn't include a VPN. These are independent services, so check each site for current prices. A VPN protects your connection. It isn't a way to do anything illegal, and the Add-on Disclosures still apply.")
+                    if isOpen("vpn") { Text("NuviGo doesn't include a VPN. These are independent services, so check each site for current prices. A VPN protects your connection. It isn't a way to do anything illegal, and the Add-on Disclosures still apply.") }
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
