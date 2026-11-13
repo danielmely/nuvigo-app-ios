@@ -68,11 +68,14 @@ struct AddonsView: View {
             if openGroups.contains(key) { openGroups.remove(key) } else { openGroups.insert(key) }
         }
     }
-    private func dropdownHeader(_ key: String, icon: String? = nil, title: String, badge: String? = nil, highlight: Bool = false) -> some View {
+    private func dropdownHeader(_ key: String, icon: String? = nil, title: String, subtitle: String? = nil, badge: String? = nil, highlight: Bool = false) -> some View {
         Button { toggle(key) } label: {
             HStack(spacing: 8) {
                 if let icon { Image(systemName: icon).font(.title3).foregroundStyle(Theme.accent) }
-                Text(title).font(.title3.weight(.bold)).foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.title3.weight(.bold)).foregroundStyle(.primary)
+                    if let subtitle { Text(subtitle).font(.footnote).foregroundStyle(.secondary) }
+                }
                 Spacer()
                 if let badge {
                     Text(badge).font(.footnote.weight(.semibold)).foregroundStyle(.primary)
@@ -277,7 +280,7 @@ struct AddonsView: View {
                     }
                     }
                 } header: {
-                    dropdownHeader("add", title: "Add an addon")
+                    dropdownHeader("add", icon: "puzzlepiece.extension", title: "Custom Add-ons", subtitle: "Unlimited add-ons, no limit")
                 }
 
                 Section {
@@ -349,7 +352,7 @@ struct HowToInstallAddonsView: View {
     private let steps: [(String, String)] = [
         ("Find the install link", "Open the website of the addon you want. Look for an Install, Configure or Manifest link. The address usually ends in manifest.json, or starts with stremio://."),
         ("Copy the link", "Press and hold the link, then choose Copy. If the site only has an Install button, long-press it and copy the link instead of opening it."),
-        ("Paste it into NuviGo", "Come back to the Add-Ons tab, tap the address box under Add an addon and paste the link."),
+        ("Paste it into NuviGo", "Come back to the Add-Ons tab, tap the address box under Custom Add-ons and paste the link."),
         ("Tap Install", "NuviGo checks the addon and adds it to your Installed list. Its catalogs show up on the Dashboard and in Search."),
         ("Remove one later", "Swipe left on an addon in the Installed list to remove it.")
     ]
