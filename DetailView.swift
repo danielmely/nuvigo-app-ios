@@ -93,7 +93,6 @@ struct DetailView: View {
         return URL(string: "https://www.rottentomatoes.com/search?search=\(q)")!
     }
 
-    @ViewBuilder
     /// OMDb ratings when you've added a key, otherwise the IMDb rating the add-on supplies.
     private var effectiveRatings: TitleRatings? {
         var r = ratings ?? TitleRatings()
@@ -101,6 +100,7 @@ struct DetailView: View {
         return r
     }
 
+    @ViewBuilder
     private var ratingsRow: some View {
         if let r = effectiveRatings, r.imdb != nil || r.tomatoes != nil {
             HStack(spacing: 16) {
