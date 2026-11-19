@@ -107,6 +107,8 @@ struct SignInSheet: View {
                             if ok {
                                 await account.sync(store: store, progress: progress, force: true)
                                 dismiss()
+                            } else if !creating {
+                                password = ""   // keep the email so you only retype the password
                             }
                         }
                     } label: {
