@@ -125,6 +125,67 @@ struct GenreCard: View {
     }
 }
 
+// MARK: Search tab browse cards
+
+/// Which full list a Search-tab card opens.
+nonisolated enum BrowseKind: Hashable { case genres, services }
+
+/// A large card under the search bar that opens the full list of genres or streaming services.
+struct BrowseCard: View {
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
+    let icon: String
+    let colors: [Color]
+
+    var body: some View {
+        HStack(spacing: 14) {
+            Image(systemName: icon).font(.title).foregroundStyle(.white).frame(width: 44)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(.title3.weight(.heavy)).foregroundStyle(.white)
+                Text(subtitle).font(.footnote).foregroundStyle(.white.opacity(0.85)).lineLimit(1)
+            }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right").font(.body.weight(.bold)).foregroundStyle(.white.opacity(0.8))
+        }
+        .padding(.horizontal, 16)
+        .frame(height: 84)
+        .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing),
+                    in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+}
+
+/// The full grid of genres or streaming services.
+struct BrowseListView: View {
+    let kind: BrowseKind
+    @EnvironmentObject var services: Services
+    @State private var logos: [Int: URL] = [:]
+
+    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible())]
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 12) {
+                switch kind {
+                case .services:
+                    ForEach(StreamingService.all) { svc in
+                        NavigationLink(value: DiscoverSource.service(svc)) { ServiceCard(service: svc, logo: logos[svc.provider]) }
+                            .buttonStyle(.plain)
+                    }
+                case .genres:
+                    ForEach(GenreOption.all) { g in
+                        NavigationLink(value: DiscoverSource.genre(g)) { GenreCard(genre: g) }
+                            .buttonStyle(.plain)
+                    }
+                }
+            }
+            .padding()
+        }
+        .navigationTitle(kind == .services ? "Streaming services" : "Genres")
+        .navigationBarTitleDisplayMode(.inline)
+        .task { if kind == .services { logos = await services.tmdb.providerLogos() } }
+    }
+}
+
 // MARK: Destination
 
 /// Lists movies and shows for a streaming service or genre.

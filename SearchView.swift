@@ -40,7 +40,6 @@ struct SearchView: View {
     @State private var results: [MetaItem] = []
     @State private var searching = false
     @State private var searched = false
-    @State private var logos: [Int: URL] = [:]
     @State private var recents: [String] = RecentSearches.load()
 
     var body: some View {
@@ -81,7 +80,7 @@ struct SearchView: View {
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: MetaItem.self) { DetailView(item: $0) }
             .navigationDestination(for: DiscoverSource.self) { DiscoverView(source: $0) }
-            .task { logos = await services.tmdb.providerLogos() }
+            .navigationDestination(for: BrowseKind.self) { BrowseListView(kind: $0) }
             .task(id: query) { await runSearch() }
             .onAppear { recents = RecentSearches.load(); takeSharedQuery() }
             .onChange(of: deepLink.searchRequest) { _, _ in takeSharedQuery() }
@@ -158,27 +157,22 @@ struct SearchView: View {
         }
     }
 
-    /// Shown when the search box is empty: streaming services, then genres.
+    /// Shown when the search box is empty: recent searches, then two cards that open all genres or all streaming services.
     private var browseCards: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 recentSection
-                Text("Streaming services").font(.title3.bold()).padding(.horizontal)
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible())], spacing: 12) {
-                    ForEach(StreamingService.all) { svc in
-                        NavigationLink(value: DiscoverSource.service(svc)) { ServiceCard(service: svc, logo: logos[svc.provider]) }
-                            .buttonStyle(.plain)
+                VStack(spacing: 12) {
+                    NavigationLink(value: BrowseKind.genres) {
+                        BrowseCard(title: "Genres", subtitle: "Action, Comedy, Sci-Fi and more", icon: "theatermasks.fill",
+                                   colors: [Theme.accent, Theme.accent.opacity(0.55)])
+                    }
+                    NavigationLink(value: BrowseKind.services) {
+                        BrowseCard(title: "Streaming services", subtitle: "Netflix, Hulu, Disney+ and more", icon: "play.tv.fill",
+                                   colors: [Color(red: 0.0, green: 0.45, blue: 0.85), Color(red: 0.05, green: 0.15, blue: 0.5)])
                     }
                 }
-                .padding(.horizontal)
-
-                Text("Genres").font(.title3.bold()).padding(.horizontal)
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible())], spacing: 12) {
-                    ForEach(GenreOption.all) { g in
-                        NavigationLink(value: DiscoverSource.genre(g)) { GenreCard(genre: g) }
-                            .buttonStyle(.plain)
-                    }
-                }
+                .buttonStyle(.plain)
                 .padding(.horizontal)
             }
             .padding(.vertical)
