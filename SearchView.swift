@@ -159,23 +159,32 @@ struct SearchView: View {
 
     /// Shown when the search box is empty: recent searches, then two cards that open all genres or all streaming services.
     private var browseCards: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                recentSection
-                VStack(spacing: 12) {
+        GeometryReader { geo in
+            let gap: CGFloat = 16
+            // Recent searches take some room above the cards; what is left is split between the two cards,
+            // with the same gap above, between and below them.
+            let recentsHeight: CGFloat = recents.isEmpty ? 0 : 100 + CGFloat(recents.count) * 36
+            let cardHeight = max(150, (geo.size.height - recentsHeight - gap * 3) / 2)
+            ScrollView {
+                VStack(alignment: .leading, spacing: gap) {
+                    recentSection
                     NavigationLink(value: BrowseKind.genres) {
                         BrowseCard(title: "Genres", subtitle: "Action, Comedy, Sci-Fi and more", icon: "theatermasks.fill",
                                    colors: [Theme.accent, Theme.accent.opacity(0.55)])
+                            .frame(height: cardHeight)
                     }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
                     NavigationLink(value: BrowseKind.services) {
                         BrowseCard(title: "Streaming services", subtitle: "Netflix, Hulu, Disney+ and more", icon: "play.tv.fill",
                                    colors: [Color(red: 0.0, green: 0.45, blue: 0.85), Color(red: 0.05, green: 0.15, blue: 0.5)])
+                            .frame(height: cardHeight)
                     }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
                 }
-                .buttonStyle(.plain)
-                .padding(.horizontal)
+                .padding(.vertical, gap)
             }
-            .padding(.vertical)
         }
     }
 

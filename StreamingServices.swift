@@ -138,19 +138,21 @@ struct BrowseCard: View {
     let colors: [Color]
 
     var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon).font(.title).foregroundStyle(.white).frame(width: 44)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(.title3.weight(.heavy)).foregroundStyle(.white)
-                Text(subtitle).font(.footnote).foregroundStyle(.white.opacity(0.85)).lineLimit(1)
+        ZStack(alignment: .bottomTrailing) {
+            VStack(alignment: .leading, spacing: 0) {
+                Image(systemName: icon).font(.system(size: 52)).foregroundStyle(.white)
+                Spacer(minLength: 12)
+                Text(title).font(.largeTitle.weight(.heavy)).foregroundStyle(.white)
+                    .minimumScaleFactor(0.7).lineLimit(1)
+                Text(subtitle).font(.subheadline).foregroundStyle(.white.opacity(0.88)).lineLimit(1)
             }
-            Spacer(minLength: 0)
-            Image(systemName: "chevron.right").font(.body.weight(.bold)).foregroundStyle(.white.opacity(0.8))
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            Image(systemName: "chevron.right").font(.title2.weight(.bold)).foregroundStyle(.white.opacity(0.85))
         }
-        .padding(.horizontal, 16)
-        .frame(height: 84)
+        .padding(20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    in: RoundedRectangle(cornerRadius: 24, style: .continuous))
     }
 }
 
