@@ -79,7 +79,7 @@ struct SubtitleStyleSection: View {
     @AppStorage(SubtitleStyle.positionKey) private var position = "low"
 
     var body: some View {
-        CollapsibleSection("Subtitle style") {
+        SubGroup("Subtitle style") {
             ZStack {
                 RoundedRectangle(cornerRadius: 10).fill(LinearGradient(colors: [.gray, .black], startPoint: .top, endPoint: .bottom))
                 StyledSubtitleText(text: String(localized: "This is how subtitles will look."))

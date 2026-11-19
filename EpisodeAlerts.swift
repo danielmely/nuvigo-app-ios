@@ -65,7 +65,7 @@ struct EpisodeAlertsSection: View {
     @State private var denied = false
 
     var body: some View {
-        CollapsibleSection("Notifications") {
+        SubGroup("Notifications") {
             Toggle("New episode alerts", isOn: Binding(
                 get: { on },
                 set: { want in

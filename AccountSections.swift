@@ -61,6 +61,9 @@ struct AppearanceSection: View {
             .pickerStyle(.segmented)
             Text("System follows your phone's setting. Light and Dark override it.")
                 .font(.footnote).foregroundStyle(.secondary)
+            AppIconSection()
+            DownloadsSection()
+            EpisodeAlertsSection()
         }
     }
 }
@@ -114,6 +117,10 @@ struct PlaybackSettingsSection: View {
             }
             Text("Picking an audio or subtitle language in the player is remembered for next time. Streams are sorted by this quality, and \"Play best stream\" picks the top one.")
                 .font(.footnote).foregroundStyle(.secondary)
+            SubtitleStyleSection()
+            ContentRatingsSection()
+            ProfilesSection()
+            PrivacySection()
         }
     }
 }
@@ -127,7 +134,7 @@ struct DownloadsSection: View {
     @State private var confirmDelete = false
 
     var body: some View {
-        CollapsibleSection("Downloads") {
+        SubGroup("Downloads") {
             Toggle("Download on Wi-Fi only", isOn: $wifiOnly)
             Toggle("Delete after I finish watching", isOn: $autoDelete)
             if autoDelete {
@@ -140,12 +147,12 @@ struct DownloadsSection: View {
             }
             if !downloads.entries.isEmpty {
                 Button("Delete all downloads", role: .destructive) { confirmDelete = true }
+                    .confirmationDialog("Delete every download?", isPresented: $confirmDelete, titleVisibility: .visible) {
+                        Button("Delete all", role: .destructive) { downloads.removeAll() }
+                    }
             }
             Text("Tap the download button next to a stream. Saved files stay on this device and aren't backed up.")
                 .font(.footnote).foregroundStyle(.secondary)
-        }
-        .confirmationDialog("Delete every download?", isPresented: $confirmDelete, titleVisibility: .visible) {
-            Button("Delete all", role: .destructive) { downloads.removeAll() }
         }
     }
 }
@@ -489,15 +496,15 @@ struct ContentRatingsSection: View {
     @EnvironmentObject var filter: ContentFilter
 
     var body: some View {
-        CollapsibleSection("Hide by rating") {
+        SubGroup("Hide by rating") {
             ForEach(RatingClass.allCases) { c in
                 Toggle("Hide \(c.rawValue)", isOn: Binding(get: { filter.isHiddenClass(c) },
                                                            set: { filter.setHidden(c, $0) }))
             }
-        } footer: {
             Text(Ratings.isConfigured
                  ? "Titles with a hidden rating disappear from every screen. TV ratings count as the nearest movie rating: TV-Y/TV-G as G, TV-PG as PG, TV-14 as PG-13, TV-MA as R."
                  : "Add your free OMDb key in the OMDb ratings section below so NuviGo can look up ratings. Until then nothing can be hidden.")
+                .font(.footnote).foregroundStyle(.secondary)
         }
     }
 }

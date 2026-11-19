@@ -44,6 +44,39 @@ struct CollapsibleSection<Content: View, Footer: View>: View {
     }
 }
 
+/// A smaller dropdown that sits inside the rows of a CollapsibleSection. Tap the title to open or close it.
+/// It adds rows to the section it is in, so it never creates a second section.
+struct SubGroup<Content: View>: View {
+    let title: LocalizedStringKey
+    @State private var open = false
+    private let content: Content
+
+    init(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) { open.toggle() }
+        } label: {
+            HStack {
+                Text(title).font(.headline)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.subheadline.weight(.bold)).foregroundStyle(.secondary)
+                    .rotationEffect(.degrees(open ? 90 : 0))
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.primary)
+        .accessibilityValue(open ? "Expanded" : "Collapsed")
+        .accessibilityHint("Double tap to \(open ? "collapse" : "expand")")
+        if open { content }
+    }
+}
+
 extension CollapsibleSection where Footer == EmptyView {
     init(_ title: LocalizedStringKey, startOpen: Bool = false, @ViewBuilder content: () -> Content) {
         self.init(title, startOpen: startOpen, content: content, footer: { EmptyView() })

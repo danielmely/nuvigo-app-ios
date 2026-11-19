@@ -23,7 +23,7 @@ struct AppIconSection: View {
     @State private var failed = false
 
     var body: some View {
-        CollapsibleSection("App icon") {
+        SubGroup("App icon") {
             if !UIApplication.shared.supportsAlternateIcons {
                 Text("Alternate icons aren't available on this device.").font(.footnote).foregroundStyle(.secondary)
             } else {

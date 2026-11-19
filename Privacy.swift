@@ -226,7 +226,7 @@ struct PrivacySection: View {
     @State private var note: String?
 
     var body: some View {
-        CollapsibleSection("Privacy") {
+        SubGroup("Privacy") {
             Toggle("Lock NuviGo", isOn: Binding(
                 get: { appLock },
                 set: { on in
@@ -237,8 +237,8 @@ struct PrivacySection: View {
             Toggle("Private mode", isOn: $privateMode)
             Toggle("Send anonymous error reports", isOn: $sendReports)
             if let note { Text(note).font(.footnote).foregroundStyle(.red) }
-        } footer: {
             Text("Lock asks for Face ID or your passcode every time you open NuviGo. Private mode doesn't save progress or watch history and doesn't update Trakt, Simkl, AniList or MyAnimeList. Error reports are short, anonymous messages (what failed, app and iOS version) that help us fix bugs. They never include your account, watch history or links. NuviGo has no ads and no third-party trackers. Downloads are stored protected on this iPhone and left out of backups.")
+                .font(.footnote).foregroundStyle(.secondary)
         }
     }
 }
@@ -247,7 +247,7 @@ struct ProfilesSection: View {
     @EnvironmentObject var profiles: ProfileStore
 
     var body: some View {
-        CollapsibleSection("Profiles") {
+        SubGroup("Profiles") {
             NavigationLink {
                 ProfilesView()
             } label: {
@@ -259,8 +259,8 @@ struct ProfilesSection: View {
                     }
                 }
             }
-        } footer: {
             Text("Each profile keeps its own Continue watching and Already watched. Kids profiles always hide PG-13, R, NC-17 and unrated titles. Set a PIN on the Main profile so kids can't switch back to it.")
+                .font(.footnote).foregroundStyle(.secondary)
         }
     }
 }

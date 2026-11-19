@@ -22,16 +22,9 @@ struct AccountView: View {
                 // Blurred and untouchable until a NuviGo account exists.
                 Group {
                     AppearanceSection()
-                    AppIconSection()
                     StatsLinkSection()
                     DataPortabilitySection()
                     PlaybackSettingsSection()
-                    SubtitleStyleSection()
-                    EpisodeAlertsSection()
-                    DownloadsSection()
-                    ContentRatingsSection()
-                    ProfilesSection()
-                    PrivacySection()
 
                     // Watch history
                     TraktSection()
