@@ -184,11 +184,11 @@ struct ScatterArt<Item: Hashable, Tile: View>: View {
     private func layout(in size: CGSize) -> [(Item, Spot)] {
         var rng = SeededRandom(state: seed)
         let chosen = Array(items.shuffled(using: &rng).prefix(count))
-        var cells = Array(0..<9)
+        var cells = Array(0..<12)   // a grid of 4 columns by 3 rows
         cells.shuffle(using: &rng)
         return chosen.enumerated().map { i, item in
             let c = cells[i % cells.count]
-            let cx = (CGFloat(c % 3) + 0.5) / 3, cy = (CGFloat(c / 3) + 0.5) / 3
+            let cx = (CGFloat(c % 4) + 0.5) / 4, cy = (CGFloat(c / 4) + 0.5) / 3
             let spot = Spot(x: (cx + CGFloat.random(in: -0.06...0.06, using: &rng)) * size.width,
                             y: (cy + CGFloat.random(in: -0.06...0.06, using: &rng)) * size.height,
                             rotation: Double.random(in: -20...20, using: &rng),
@@ -199,7 +199,7 @@ struct ScatterArt<Item: Hashable, Tile: View>: View {
 
     var body: some View {
         GeometryReader { geo in
-            let base = min(geo.size.width, geo.size.height) * 0.3
+            let base = min(geo.size.width, geo.size.height) * 0.25
             ForEach(Array(layout(in: geo.size).enumerated()), id: \.offset) { _, pair in
                 tile(pair.0, base)
                     .scaleEffect(pair.1.scale)

@@ -175,7 +175,7 @@ struct SearchView: View {
                     NavigationLink(value: BrowseKind.genres) {
                         BrowseCard(title: "Genres", subtitle: "Action, Comedy, Sci-Fi and more",
                                    colors: [Theme.accent, Theme.accent.opacity(0.55)]) {
-                            ScatterArt(items: GenreOption.all, seed: artSeed, count: 8) { g, size in
+                            ScatterArt(items: GenreOption.all, seed: artSeed, count: 12) { g, size in
                                 Text(g.emoji).font(.system(size: size * 0.9))
                             }
                         }
@@ -186,7 +186,7 @@ struct SearchView: View {
                     NavigationLink(value: BrowseKind.services) {
                         BrowseCard(title: "Streaming services", subtitle: "Netflix, Hulu, Disney+ and more",
                                    colors: [Color(red: 0.0, green: 0.45, blue: 0.85), Color(red: 0.05, green: 0.15, blue: 0.5)]) {
-                            ScatterArt(items: StreamingService.all, seed: artSeed &+ 1, count: 7) { svc, size in
+                            ScatterArt(items: StreamingService.all, seed: artSeed &+ 1, count: 11) { svc, size in
                                 if let logo = logos[svc.provider] {
                                     AsyncImage(url: logo) { phase in
                                         if let image = phase.image { image.resizable().scaledToFill() }
