@@ -41,6 +41,9 @@ struct SearchView: View {
     @State private var searching = false
     @State private var searched = false
     @State private var recents: [String] = RecentSearches.load()
+    @State private var logos: [Int: URL] = [:]
+    /// Picks which pictures fill the two cards. A new one each time the Search tab opens.
+    @State private var artSeed = UInt64.random(in: 1...UInt64.max)
 
     var body: some View {
         NavigationStack {
@@ -82,7 +85,8 @@ struct SearchView: View {
             .navigationDestination(for: DiscoverSource.self) { DiscoverView(source: $0) }
             .navigationDestination(for: BrowseKind.self) { BrowseListView(kind: $0) }
             .task(id: query) { await runSearch() }
-            .onAppear { recents = RecentSearches.load(); takeSharedQuery() }
+            .task { logos = await services.tmdb.providerLogos() }
+            .onAppear { recents = RecentSearches.load(); artSeed = UInt64.random(in: 1...UInt64.max); takeSharedQuery() }
             .onChange(of: deepLink.searchRequest) { _, _ in takeSharedQuery() }
         }
     }
@@ -169,16 +173,35 @@ struct SearchView: View {
                 VStack(alignment: .leading, spacing: gap) {
                     recentSection
                     NavigationLink(value: BrowseKind.genres) {
-                        BrowseCard(title: "Genres", subtitle: "Action, Comedy, Sci-Fi and more", icon: "theatermasks.fill",
-                                   colors: [Theme.accent, Theme.accent.opacity(0.55)])
-                            .frame(height: cardHeight)
+                        BrowseCard(title: "Genres", subtitle: "Action, Comedy, Sci-Fi and more",
+                                   colors: [Theme.accent, Theme.accent.opacity(0.55)]) {
+                            ScatterArt(items: GenreOption.all, seed: artSeed, count: 8) { g, size in
+                                Text(g.emoji).font(.system(size: size * 0.9))
+                            }
+                        }
+                        .frame(height: cardHeight)
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)
                     NavigationLink(value: BrowseKind.services) {
-                        BrowseCard(title: "Streaming services", subtitle: "Netflix, Hulu, Disney+ and more", icon: "play.tv.fill",
-                                   colors: [Color(red: 0.0, green: 0.45, blue: 0.85), Color(red: 0.05, green: 0.15, blue: 0.5)])
-                            .frame(height: cardHeight)
+                        BrowseCard(title: "Streaming services", subtitle: "Netflix, Hulu, Disney+ and more",
+                                   colors: [Color(red: 0.0, green: 0.45, blue: 0.85), Color(red: 0.05, green: 0.15, blue: 0.5)]) {
+                            ScatterArt(items: StreamingService.all, seed: artSeed &+ 1, count: 7) { svc, size in
+                                if let logo = logos[svc.provider] {
+                                    AsyncImage(url: logo) { phase in
+                                        if let image = phase.image { image.resizable().scaledToFill() }
+                                        else { Color.white.opacity(0.15) }
+                                    }
+                                    .frame(width: size * 0.8, height: size * 0.8)
+                                    .clipShape(RoundedRectangle(cornerRadius: size * 0.18, style: .continuous))
+                                    .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
+                                } else {
+                                    ServiceChip(service: svc, size: size * 0.8)
+                                        .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
+                                }
+                            }
+                        }
+                        .frame(height: cardHeight)
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)

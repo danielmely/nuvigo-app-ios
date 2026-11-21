@@ -131,28 +131,98 @@ struct GenreCard: View {
 nonisolated enum BrowseKind: Hashable { case genres, services }
 
 /// A large card under the search bar that opens the full list of genres or streaming services.
-struct BrowseCard: View {
+/// The card is filled with a scatter of pictures (`art`) with a dark fade at the bottom behind the title.
+struct BrowseCard<Art: View>: View {
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey
-    let icon: String
     let colors: [Color]
+    @ViewBuilder var art: () -> Art
 
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack(alignment: .leading, spacing: 0) {
-                Image(systemName: icon).font(.system(size: 52)).foregroundStyle(.white)
-                Spacer(minLength: 12)
-                Text(title).font(.largeTitle.weight(.heavy)).foregroundStyle(.white)
-                    .minimumScaleFactor(0.7).lineLimit(1)
-                Text(subtitle).font(.subheadline).foregroundStyle(.white.opacity(0.88)).lineLimit(1)
+        ZStack(alignment: .bottomLeading) {
+            LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
+            art()
+            LinearGradient(colors: [.clear, .black.opacity(0.55)], startPoint: .center, endPoint: .bottom)
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title).font(.largeTitle.weight(.heavy)).foregroundStyle(.white)
+                        .minimumScaleFactor(0.7).lineLimit(1)
+                    Text(subtitle).font(.subheadline).foregroundStyle(.white.opacity(0.9)).lineLimit(1)
+                }
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right").font(.title2.weight(.bold)).foregroundStyle(.white.opacity(0.9))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            Image(systemName: "chevron.right").font(.title2.weight(.bold)).foregroundStyle(.white.opacity(0.85))
+            .padding(20)
         }
-        .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+    }
+}
+
+/// A repeatable random number generator, so the scatter holds still while the screen is open and
+/// changes only when the seed changes.
+struct SeededRandom: RandomNumberGenerator {
+    var state: UInt64
+    mutating func next() -> UInt64 {
+        state &+= 0x9E37_79B9_7F4A_7C15
+        var z = state
+        z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
+        z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
+        return z ^ (z >> 31)
+    }
+}
+
+/// Scatters a random handful of `items` over the card, each tilted a little, drawn with `tile`.
+struct ScatterArt<Item: Hashable, Tile: View>: View {
+    let items: [Item]
+    let seed: UInt64
+    var count = 7
+    @ViewBuilder var tile: (Item, CGFloat) -> Tile
+
+    private struct Spot { let x: CGFloat; let y: CGFloat; let rotation: Double; let scale: CGFloat }
+
+    private func layout(in size: CGSize) -> [(Item, Spot)] {
+        var rng = SeededRandom(state: seed)
+        let chosen = Array(items.shuffled(using: &rng).prefix(count))
+        var cells = Array(0..<9)
+        cells.shuffle(using: &rng)
+        return chosen.enumerated().map { i, item in
+            let c = cells[i % cells.count]
+            let cx = (CGFloat(c % 3) + 0.5) / 3, cy = (CGFloat(c / 3) + 0.5) / 3
+            let spot = Spot(x: (cx + CGFloat.random(in: -0.06...0.06, using: &rng)) * size.width,
+                            y: (cy + CGFloat.random(in: -0.06...0.06, using: &rng)) * size.height,
+                            rotation: Double.random(in: -20...20, using: &rng),
+                            scale: CGFloat.random(in: 0.85...1.15, using: &rng))
+            return (item, spot)
+        }
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            let base = min(geo.size.width, geo.size.height) * 0.3
+            ForEach(Array(layout(in: geo.size).enumerated()), id: \.offset) { _, pair in
+                tile(pair.0, base)
+                    .scaleEffect(pair.1.scale)
+                    .rotationEffect(.degrees(pair.1.rotation))
+                    .position(x: pair.1.x, y: pair.1.y)
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+/// A plain colored tile with the service's name, used when a logo isn't available.
+struct ServiceChip: View {
+    let service: StreamingService
+    let size: CGFloat
+
+    var body: some View {
+        Text(service.name)
+            .font(.system(size: size * 0.2, weight: .heavy)).foregroundStyle(.white)
+            .multilineTextAlignment(.center).minimumScaleFactor(0.5).lineLimit(2).padding(6)
+            .frame(width: size, height: size)
+            .background(LinearGradient(colors: service.colors, startPoint: .topLeading, endPoint: .bottomTrailing),
+                        in: RoundedRectangle(cornerRadius: size * 0.22, style: .continuous))
     }
 }
 
