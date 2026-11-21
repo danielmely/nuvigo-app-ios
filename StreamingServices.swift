@@ -114,14 +114,24 @@ struct GenreCard: View {
     let genre: GenreOption
 
     var body: some View {
-        HStack(spacing: 10) {
-            Text(genre.emoji).font(.title3)
-            Text(genre.name).font(.subheadline.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.7)
-            Spacer(minLength: 0)
+        ZStack(alignment: .leading) {
+            LinearGradient(colors: [Theme.accent.opacity(0.35), Theme.accent.opacity(0.15)], startPoint: .topLeading, endPoint: .bottomTrailing)
+            HStack(spacing: 10) {
+                Text(genre.emoji)
+                    .font(.system(size: 26))
+                    .frame(width: 44, height: 44)
+                    .background(.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                Text(genre.name)
+                    .font(.subheadline.weight(.heavy))
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12)
         }
-        .padding(.horizontal, 12)
-        .frame(height: 52)
-        .background(Theme.accent.opacity(0.14), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .frame(height: 70)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
