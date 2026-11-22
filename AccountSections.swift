@@ -214,46 +214,44 @@ struct SimklSection: View {
 
 // MARK: - AniList and MyAnimeList
 
-struct AniListSection: View {
+/// One "Anime" dropdown: whether the Anime card shows on the dashboard, plus AniList and MyAnimeList.
+struct AnimeSection: View {
     @EnvironmentObject var services: Services
+    @AppStorage("showAnimeCard") private var showAnimeCard = true
 
     var body: some View {
         let a = services.anilist
-        CollapsibleSection("AniList") {
-            if a.isSignedIn {
-                ConnectedRow(text: "Signed in")
-                Text("Anime you finish update your AniList progress.").font(.footnote).foregroundStyle(.secondary)
-                Button("Sign out", role: .destructive) { a.signOut() }
-            } else {
-                Button { Task { await a.signIn() } } label: {
-                    if a.busy { ProgressView() } else { Text("Sign in with AniList") }
-                }
-                .disabled(a.busy)
-                ConfigHint(show: !a.isConfigured, text: "Add your AniList Client ID in Config.swift. Redirect URL: nuvigo://anilist")
-            }
-            ErrorText(message: a.error)
-        }
-    }
-}
-
-struct MALSection: View {
-    @EnvironmentObject var services: Services
-
-    var body: some View {
         let m = services.mal
-        CollapsibleSection("MyAnimeList") {
-            if m.isSignedIn {
-                ConnectedRow(text: "Signed in")
-                Text("Anime you finish update your MyAnimeList progress.").font(.footnote).foregroundStyle(.secondary)
-                Button("Sign out", role: .destructive) { m.signOut() }
-            } else {
-                Button { Task { await m.signIn() } } label: {
-                    if m.busy { ProgressView() } else { Text("Sign in with MyAnimeList") }
+        CollapsibleSection("Anime") {
+            Toggle("Show Anime on the dashboard", isOn: $showAnimeCard)
+            SubGroup("AniList") {
+                if a.isSignedIn {
+                    ConnectedRow(text: "Signed in")
+                    Text("Anime you finish update your AniList progress.").font(.footnote).foregroundStyle(.secondary)
+                    Button("Sign out", role: .destructive) { a.signOut() }
+                } else {
+                    Button { Task { await a.signIn() } } label: {
+                        if a.busy { ProgressView() } else { Text("Sign in with AniList") }
+                    }
+                    .disabled(a.busy)
+                    ConfigHint(show: !a.isConfigured, text: "Add your AniList Client ID in Config.swift. Redirect URL: nuvigo://anilist")
                 }
-                .disabled(m.busy)
-                ConfigHint(show: !m.isConfigured, text: "Add your MyAnimeList Client ID in Config.swift. Redirect URL: nuvigo://mal")
+                ErrorText(message: a.error)
             }
-            ErrorText(message: m.error)
+            SubGroup("MyAnimeList") {
+                if m.isSignedIn {
+                    ConnectedRow(text: "Signed in")
+                    Text("Anime you finish update your MyAnimeList progress.").font(.footnote).foregroundStyle(.secondary)
+                    Button("Sign out", role: .destructive) { m.signOut() }
+                } else {
+                    Button { Task { await m.signIn() } } label: {
+                        if m.busy { ProgressView() } else { Text("Sign in with MyAnimeList") }
+                    }
+                    .disabled(m.busy)
+                    ConfigHint(show: !m.isConfigured, text: "Add your MyAnimeList Client ID in Config.swift. Redirect URL: nuvigo://mal")
+                }
+                ErrorText(message: m.error)
+            }
         }
     }
 }

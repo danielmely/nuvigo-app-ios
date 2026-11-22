@@ -29,8 +29,7 @@ struct AccountView: View {
                     // Watch history
                     TraktSection()
                     SimklSection()
-                    AniListSection()
-                    MALSection()
+                    AnimeSection()
 
                     // Your own media servers
                     JellyfinSection()

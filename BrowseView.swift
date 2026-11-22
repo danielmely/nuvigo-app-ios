@@ -42,6 +42,8 @@ struct BrowseView: View {
     @State private var remoteArt: [BrowseCategory.Kind: [URL]] = [:]
     /// Your own card order: card titles joined by "|". Syncs with your account. Empty means the default order.
     @AppStorage("dashboardOrder") private var orderRaw = ""
+    /// Account → Anime lets you hide the Anime card.
+    @AppStorage("showAnimeCard") private var showAnimeCard = true
 
     private static let genreTints: [Color] = [.blue, .green, .purple, .red, .mint, .cyan, .brown, .indigo]
 
@@ -98,7 +100,7 @@ struct BrowseView: View {
 
     /// Every card in the order you chose (new cards go at the end, in their default order).
     private var orderedCategories: [BrowseCategory] {
-        let base = primaryCategories + moreCategories
+        let base = (primaryCategories + moreCategories).filter { showAnimeCard || $0.title != "Anime" }
         let saved = orderRaw.split(separator: "|").map(String.init)
         let rank = Dictionary(saved.enumerated().map { ($1, $0) }, uniquingKeysWith: { a, _ in a })
         return base.enumerated()
@@ -253,14 +255,6 @@ struct BrowseView: View {
                         if !resume.isEmpty {
                             PosterRow(title: "Continue watching") {
                                 ForEach(resume) { ContinueCard(entry: $0).frame(width: 120) }
-                            }
-                        }
-                        ForEach(homeRows) { row in
-                            let shown = filter.visible(row.items)
-                            if !shown.isEmpty {
-                                PosterRow(title: row.title) {
-                                    ForEach(shown) { PosterLink(item: $0).frame(width: 120) }
-                                }
                             }
                         }
                     }

@@ -22,7 +22,7 @@ final class NuviAccount: ObservableObject {
     private var lastAttempt = Date.distantPast
 
     private let syncKeys = ["addons", "progress", "settings", "links", "watched"]
-    private let settingKeys = ["appearance", "preferredQuality", "skipIntroSeconds", "defaultSpeed", "downloadWiFiOnly", "dashboardOrder", "hiddenRatings", "preferredAudioLang", "preferredSubLang", "autoPlayNext", "showSkipCredits"]
+    private let settingKeys = ["appearance", "preferredQuality", "skipIntroSeconds", "defaultSpeed", "downloadWiFiOnly", "dashboardOrder", "hiddenRatings", "preferredAudioLang", "preferredSubLang", "autoPlayNext", "showSkipCredits", "showAnimeCard"]
     private let linkKeys = ["trakt.token", "simkl.token", "anilist.token", "mal.tokens", "jellyfin.session",
                             "plex.session", "opensubtitles.session", "tmdb.session",
                             "debrid.realdebrid.token", "debrid.torbox.token", "debrid.alldebrid.token", "debrid.premiumize.token"]
