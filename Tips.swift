@@ -54,6 +54,7 @@ final class TipStore: ObservableObject {
 
 /// The Tips tab. NuviGo is free; tips are one-time, optional and unlock nothing.
 struct TipsView: View {
+    @EnvironmentObject var nav: TabNav
     @StateObject private var store = TipStore()
     /// Custom amount = this many of the $4.99 tip, so it goes up about $5 at a time. The App Store allows 1 to 10 per purchase.
     @State private var customQty = 1
@@ -64,7 +65,7 @@ struct TipsView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $nav.path) {
             ScrollView {
                 VStack(spacing: 18) {
                     Image(systemName: "heart.fill")

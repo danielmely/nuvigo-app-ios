@@ -248,9 +248,7 @@ struct ProfilesSection: View {
 
     var body: some View {
         SubGroup("Profiles") {
-            NavigationLink {
-                ProfilesView()
-            } label: {
+            NavigationLink(value: SettingsRoute.profiles) {
                 LabeledContent("Profile") {
                     HStack(spacing: 6) {
                         Text(profiles.active.name)

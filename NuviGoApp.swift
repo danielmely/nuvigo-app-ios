@@ -4,6 +4,41 @@ import CoreSpotlight
 import AVFoundation
 
 @main
+/// One tab's navigation path. Tapping the tab you are already on pops everything back to its main page.
+@MainActor final class TabNav: ObservableObject {
+    @Published var path = NavigationPath()
+    /// Bumps on every pop-to-main-page tap, for screens that want to react (Search clears its box).
+    @Published var taps = 0
+    /// Whether the tab was already on its main page when the tap came in.
+    private(set) var wasAtRoot = true
+
+    func popToRoot() {
+        wasAtRoot = path.isEmpty
+        path = NavigationPath()
+        taps += 1
+    }
+}
+
+/// Screens opened from a settings row. Using values (not inline destinations) keeps them in the tab's path,
+/// so tapping the tab again can pop them.
+enum SettingsRoute: Hashable {
+    case howTo, disclosures, profiles, stats
+
+    @ViewBuilder var screen: some View {
+        switch self {
+        case .howTo: HowToInstallAddonsView()
+        case .disclosures: AddonDisclosuresView()
+        case .profiles: ProfilesView()
+        case .stats: StatsView()
+        }
+    }
+}
+
+/// The five tabs' navigation paths.
+@MainActor final class TabNavs: ObservableObject {
+    let stacks = (0..<5).map { _ in TabNav() }
+}
+
 struct NuviGoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = AddonStore()
@@ -19,6 +54,7 @@ struct NuviGoApp: App {
     @StateObject private var subs = SubscriptionStore()
     @StateObject private var lock = AppLockManager()
     @State private var tab = 0
+    @StateObject private var navs = TabNavs()
     /// True once a swipe has been judged sideways. Up and down scrolling is switched off until the finger lifts.
     @State private var swipeLocked = false
     /// How far the current horizontal swipe has moved; the whole page follows it.
@@ -59,7 +95,7 @@ struct NuviGoApp: App {
 
     /// Opens a tab (respecting the subscription gate).
     private func openTab(_ new: Int) {
-        guard new != tab else { return }
+        guard new != tab else { navs.stacks[new].popToRoot(); return }   // same tab again: back to its main page
         guard new == 0 || new == 1 || subs.allow() else { return }
         tab = new
         visited.insert(new)
@@ -72,11 +108,11 @@ struct NuviGoApp: App {
 
     @ViewBuilder private func page(_ i: Int) -> some View {
         switch i {
-        case 0: BrowseView()
-        case 1: SearchView()
-        case 2: AddonsView()
-        case 3: AccountView()
-        default: TipsView()
+        case 0: BrowseView().environmentObject(navs.stacks[0])
+        case 1: SearchView().environmentObject(navs.stacks[1])
+        case 2: AddonsView().environmentObject(navs.stacks[2])
+        case 3: AccountView().environmentObject(navs.stacks[3])
+        default: TipsView().environmentObject(navs.stacks[4])
         }
     }
 

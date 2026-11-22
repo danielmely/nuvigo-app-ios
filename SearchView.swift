@@ -30,6 +30,7 @@ enum RecentSearches {
 }
 
 struct SearchView: View {
+    @EnvironmentObject var nav: TabNav
     @EnvironmentObject var store: AddonStore
     @EnvironmentObject var services: Services
     @EnvironmentObject var filter: ContentFilter
@@ -46,7 +47,7 @@ struct SearchView: View {
     @State private var artSeed = UInt64.random(in: 1...UInt64.max)
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $nav.path) {
           VStack(spacing: 0) {
             searchBar
             Group {
@@ -87,6 +88,7 @@ struct SearchView: View {
             .navigationDestination(for: BrowseKind.self) { kind in
                 if kind == .ratings { RatingsView() } else { BrowseListView(kind: kind) }
             }
+            .onChange(of: nav.taps) { _, _ in if nav.wasAtRoot { query = "" } }   // tap Search again on its main page: clear the box
             .task(id: query) { await runSearch() }
             .task { logos = await services.tmdb.providerLogos() }
             .onAppear { recents = RecentSearches.load(); artSeed = UInt64.random(in: 1...UInt64.max); takeSharedQuery() }

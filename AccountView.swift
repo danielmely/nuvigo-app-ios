@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 
 struct AccountView: View {
+    @EnvironmentObject var nav: TabNav
     @EnvironmentObject var account: NuviAccount
 
     /// Linking other accounts requires a NuviGo account. Until a server
@@ -11,7 +12,7 @@ struct AccountView: View {
     private var canLink: Bool { account.email != nil || !account.isConfigured || subs.demoActive }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $nav.path) {
             List {
                 NuviAccountSection()
 
@@ -48,6 +49,7 @@ struct AccountView: View {
                 AccountBottomSection()
             }
             .scrollDisabled(!canLink)
+            .navigationDestination(for: SettingsRoute.self) { $0.screen }
             .contentMargins(.bottom, 24, for: .scrollContent)   // a little breathing room under the last row
             .toolbar(.hidden, for: .navigationBar)
         }

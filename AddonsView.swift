@@ -47,6 +47,7 @@ enum AddonTier: Int, CaseIterable, Identifiable {
 }
 
 struct AddonsView: View {
+    @EnvironmentObject var nav: TabNav
     @EnvironmentObject var store: AddonStore
     @EnvironmentObject var trakt: TraktAuth
     @EnvironmentObject var progress: ProgressStore
@@ -218,7 +219,7 @@ struct AddonsView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $nav.path) {
             List {
                 if store.addons.isEmpty && services.folders.isEmpty {
                     Section("Installed") {
@@ -272,10 +273,10 @@ struct AddonsView: View {
                     }
                     .disabled(input.trimmingCharacters(in: .whitespaces).isEmpty || adding)
                     if let error { Text(error).font(.footnote).foregroundStyle(.red) }
-                    NavigationLink { HowToInstallAddonsView() } label: {
+                    NavigationLink(value: SettingsRoute.howTo) {
                         Label("How to install add-ons", systemImage: "questionmark.circle")
                     }
-                    NavigationLink { AddonDisclosuresView() } label: {
+                    NavigationLink(value: SettingsRoute.disclosures) {
                         Label("Add-on Disclosures", systemImage: "exclamationmark.shield")
                     }
                     }
@@ -298,6 +299,7 @@ struct AddonsView: View {
                     if isOpen("vpn") { Text("NuviGo doesn't include a VPN. These are independent services, so check each site for current prices. A VPN protects your connection. It isn't a way to do anything illegal, and the Add-on Disclosures still apply.") }
                 }
             }
+            .navigationDestination(for: SettingsRoute.self) { $0.screen }
             .contentMargins(.bottom, 24, for: .scrollContent)   // a little breathing room under the last row
             .toolbar(.hidden, for: .navigationBar)
             .sheet(item: $keySheet) { kind in

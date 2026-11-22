@@ -12,7 +12,7 @@ struct WatchedContent: View {
     @State private var picks: [Recommendation] = []
     @State private var candidates: [MetaItem] = []
     @State private var editing: WatchedItem?
-    @State private var infoItem: MetaItem?
+    @EnvironmentObject var nav: TabNav
     @State private var loadingPicks = false
 
     private let grid = [GridItem(.adaptive(minimum: 100), spacing: 12)]
@@ -28,10 +28,9 @@ struct WatchedContent: View {
         .onChange(of: watched.items) { _, _ in refreshPicks() }
         .onChange(of: candidates.count) { _, _ in refreshPicks() }
         .sheet(item: $editing) { item in
-            RatingSheet(item: item, onInfo: { infoItem = item.metaItem })
+            RatingSheet(item: item, onInfo: { nav.path.append(item.metaItem) })
                 .presentationDetents([.medium])
         }
-        .navigationDestination(item: $infoItem) { DetailView(item: $0) }
     }
 
     // MARK: Picks

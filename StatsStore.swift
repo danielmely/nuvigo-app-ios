@@ -108,7 +108,7 @@ func statsDuration(_ seconds: Double) -> String {
 struct StatsLinkSection: View {
     var body: some View {
         Section {
-            NavigationLink { StatsView() } label: {
+            NavigationLink(value: SettingsRoute.stats) {
                 Label("Your stats", systemImage: "chart.bar.fill")
             }
         }

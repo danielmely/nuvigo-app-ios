@@ -22,6 +22,7 @@ nonisolated struct BrowseCategory: Identifiable, Hashable {
 }
 
 struct BrowseView: View {
+    @EnvironmentObject var nav: TabNav
     @Environment(\.horizontalSizeClass) private var hSize
     @EnvironmentObject var store: AddonStore
     @EnvironmentObject var trakt: TraktAuth
@@ -216,7 +217,7 @@ struct BrowseView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $nav.path) {
             ScrollView {
                 // Measures how far the content is pulled down past the top.
                 Color.clear.frame(height: 0)

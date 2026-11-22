@@ -39,7 +39,7 @@ struct CategoryView: View {
     @State private var playing: PlayItem?
     @State private var tappedDownload: DownloadEntry?
     @State private var pendingDelete: DownloadEntry?
-    @State private var infoItem: MetaItem?
+    @EnvironmentObject var nav: TabNav
     @Environment(\.scenePhase) private var scenePhase
     @State private var lastLoad = Date()
 
@@ -108,10 +108,9 @@ struct CategoryView: View {
                                                                               set: { if !$0 { tappedDownload = nil } }),
                             titleVisibility: .visible, presenting: tappedDownload) { d in
             if d.state == .done { Button("Watch now") { playDownload(d) } }
-            Button("View full info") { infoItem = d.metaItem }
+            Button("View full info") { nav.path.append(d.metaItem) }
             Button("Cancel", role: .cancel) {}
         }
-        .navigationDestination(item: $infoItem) { DetailView(item: $0) }
         .alert(pendingDelete?.state == .downloading ? "Cancel this download?" : "Delete this download?",
                isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } }),
                presenting: pendingDelete) { d in
