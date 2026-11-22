@@ -138,7 +138,7 @@ struct DownloadsSection: View {
             Toggle("Download on Wi-Fi only", isOn: $wifiOnly)
             Toggle("Delete after I finish watching", isOn: $autoDelete)
             if autoDelete {
-                Text("A download is removed when you watch past 90% of it and close the player. You can download it again any time.")
+                Text("A download is removed when you watch past 90 percent of it and close the player. You can download it again any time.")
                     .font(.footnote).foregroundStyle(.secondary)
             }
             if downloads.doneCount > 0 {
