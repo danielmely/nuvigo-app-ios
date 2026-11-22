@@ -3,7 +3,6 @@ import Combine
 import CoreSpotlight
 import AVFoundation
 
-@main
 /// One tab's navigation path. Tapping the tab you are already on pops everything back to its main page.
 @MainActor final class TabNav: ObservableObject {
     @Published var path = NavigationPath()
@@ -39,6 +38,7 @@ enum SettingsRoute: Hashable {
     let stacks = (0..<5).map { _ in TabNav() }
 }
 
+@main
 struct NuviGoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = AddonStore()
