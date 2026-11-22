@@ -51,7 +51,7 @@ struct BrowseView: View {
             .sorted()
     }
 
-    /// The six cards that fill the first screen, in this order.
+    /// The six cards that fill the first screen (Continue watching, Popular, Movies, Series, Trending, New releases), in this order.
     private var primaryCategories: [BrowseCategory] {
         let resume = progress.continueWatching.count
         return [
@@ -61,15 +61,14 @@ struct BrowseView: View {
             .init(kind: .type("movie"), title: "Movies", symbol: "film.fill", tint: .red, emoji: "🎬"),
             .init(kind: .type("series"), title: "Series", symbol: "tv.fill", tint: .pink, emoji: "📺"),
             .init(kind: .trending, title: "Trending", symbol: "flame.fill", tint: .orange, emoji: "🔥"),
-            .init(kind: .type("anime"), title: "Anime", symbol: "sparkles.tv.fill", tint: .purple, emoji: "🎌")
+            .init(kind: .newReleases, title: "New releases", symbol: "sparkles", tint: .mint,
+                  subtitle: "Recent movies", emoji: "✨")
         ]
     }
 
     /// Everything else, shown below the six cards.
     private var moreCategories: [BrowseCategory] {
         var list: [BrowseCategory] = []
-        list.append(.init(kind: .newReleases, title: "New releases", symbol: "sparkles", tint: .mint,
-                          subtitle: "Recent movies", emoji: "✨"))
         if trakt.isSignedIn {
             list.append(.init(kind: .upcoming, title: "Coming up", symbol: "calendar", tint: .red,
                               subtitle: "New episodes", emoji: "📆"))
@@ -91,10 +90,8 @@ struct BrowseView: View {
                               tint: ref.prefix == "jf:" ? .purple : .orange, subtitle: "Your server",
                               emoji: "📀"))
         }
-        for (i, g) in genres.filter({ $0.lowercased() != "anime" }).enumerated() {
-            list.append(.init(kind: .genre(g), title: g, symbol: "tag.fill",
-                              tint: Self.genreTints[i % Self.genreTints.count]))
-        }
+        // Genres live in the Search tab; Anime sits where the first genre card used to be.
+        list.append(.init(kind: .type("anime"), title: "Anime", symbol: "sparkles.tv.fill", tint: .purple, emoji: "🎌"))
         return list
     }
 
