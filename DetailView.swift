@@ -312,7 +312,7 @@ struct DetailView: View {
         case .downloading:
             HStack(spacing: 12) {
                 ProgressView(value: d.progress)
-                Text("\(Int(d.progress * 100))%").font(.caption).foregroundStyle(.secondary)
+                Text(d.progress, format: .percent.precision(.fractionLength(0))).font(.caption).foregroundStyle(.secondary)
                 Button { downloads.remove(id) } label: { Image(systemName: "xmark.circle") }
                     .buttonStyle(.borderless)
                     .accessibilityLabel("Cancel download")

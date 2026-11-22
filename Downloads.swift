@@ -319,7 +319,7 @@ struct DownloadRow: View {
                         .font(.caption).foregroundStyle(.secondary)
                 case .downloading:
                     ProgressView(value: entry.progress)
-                    Text("\(Int(entry.progress * 100))%").font(.caption).foregroundStyle(.secondary)
+                    Text(entry.progress, format: .percent.precision(.fractionLength(0))).font(.caption).foregroundStyle(.secondary)
                 case .failed:
                     Text(entry.error ?? "Download failed").font(.caption).foregroundStyle(.red)
                 }
@@ -362,7 +362,7 @@ struct DownloadTile: View {
                 case .downloading:
                     VStack(spacing: 4) {
                         ProgressView(value: entry.progress).tint(.white)
-                        Text("\(Int(entry.progress * 100))%").font(.caption2.weight(.bold)).foregroundStyle(.white)
+                        Text(entry.progress, format: .percent.precision(.fractionLength(0))).font(.caption2.weight(.bold)).foregroundStyle(.white)
                     }
                     .padding(8)
                     .frame(maxWidth: .infinity)
