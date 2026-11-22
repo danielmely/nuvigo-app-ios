@@ -298,6 +298,7 @@ struct AddonsView: View {
                     if isOpen("vpn") { Text("NuviGo doesn't include a VPN. These are independent services, so check each site for current prices. A VPN protects your connection. It isn't a way to do anything illegal, and the Add-on Disclosures still apply.") }
                 }
             }
+            .contentMargins(.bottom, 110, for: .scrollContent)   // room to scroll the last row clear of the tab bar
             .toolbar(.hidden, for: .navigationBar)
             .sheet(item: $keySheet) { kind in
                 NavigationStack {

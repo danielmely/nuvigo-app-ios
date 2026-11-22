@@ -76,6 +76,7 @@ struct SearchView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .contentMargins(.bottom, 110, for: .scrollContent)
                     .simultaneousGesture(TapGesture().onEnded { recents = RecentSearches.add(query) })
                 }
             }
@@ -238,7 +239,8 @@ struct SearchView: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal)
                 }
-                .padding(.vertical, gap)
+                .padding(.top, gap)
+                .padding(.bottom, 110)   // room to scroll the last card clear of the tab bar
             }
         }
     }

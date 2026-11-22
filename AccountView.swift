@@ -48,6 +48,7 @@ struct AccountView: View {
                 AccountBottomSection()
             }
             .scrollDisabled(!canLink)
+            .contentMargins(.bottom, 110, for: .scrollContent)   // room to scroll the last row clear of the tab bar
             .toolbar(.hidden, for: .navigationBar)
         }
     }
