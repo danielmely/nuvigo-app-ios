@@ -83,7 +83,9 @@ struct SearchView: View {
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: MetaItem.self) { DetailView(item: $0) }
             .navigationDestination(for: DiscoverSource.self) { DiscoverView(source: $0) }
-            .navigationDestination(for: BrowseKind.self) { BrowseListView(kind: $0) }
+            .navigationDestination(for: BrowseKind.self) { kind in
+                if kind == .ratings { RatingsView() } else { BrowseListView(kind: kind) }
+            }
             .task(id: query) { await runSearch() }
             .task { logos = await services.tmdb.providerLogos() }
             .onAppear { recents = RecentSearches.load(); artSeed = UInt64.random(in: 1...UInt64.max); takeSharedQuery() }
@@ -161,14 +163,17 @@ struct SearchView: View {
         }
     }
 
-    /// Shown when the search box is empty: recent searches, then two cards that open all genres or all streaming services.
+    private static let yearArt = ["1925", "1939", "1946", "1955", "1962", "1972", "1980", "1994", "1999", "2004", "2010", "2016", "2021", "2025"]
+    private static let ratingArt = ["⭐️ 9.3", "🍅 98%", "⭐️ 8.8", "🍅 100%", "⭐️ 9.0", "🍅 94%", "⭐️ 1.9", "🍅 4%", "⭐️ 2.4", "🍅 12%"]
+
+    /// Shown when the search box is empty: recent searches, then four cards: genres, streaming services, release years and ratings.
     private var browseCards: some View {
         GeometryReader { geo in
             let gap: CGFloat = 16
             // Recent searches take some room above the cards; what is left is split between the two cards,
             // with the same gap above, between and below them.
             let recentsHeight: CGFloat = recents.isEmpty ? 0 : 100 + CGFloat(recents.count) * 36
-            let cardHeight = max(150, (geo.size.height - recentsHeight - gap * 3) / 2)
+            let cardHeight = max(150, (geo.size.height - recentsHeight - gap * 5) / 4)
             ScrollView {
                 VStack(alignment: .leading, spacing: gap) {
                     recentSection
@@ -199,6 +204,33 @@ struct SearchView: View {
                                     ServiceChip(service: svc, size: size * 0.8)
                                         .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
                                 }
+                            }
+                        }
+                        .frame(height: cardHeight)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    NavigationLink(value: BrowseKind.years) {
+                        BrowseCard(title: "Release years", subtitle: "Every year from 1920 to today",
+                                   colors: [Color(red: 0.95, green: 0.45, blue: 0.25), Color(red: 0.6, green: 0.12, blue: 0.35)]) {
+                            ScatterArt(items: Self.yearArt, seed: artSeed &+ 2, count: 9) { y, size in
+                                Text(y).font(.system(size: size * 0.42, weight: .heavy, design: .rounded)).foregroundStyle(.white)
+                                    .frame(width: size * 0.95, height: size * 0.62)
+                                    .background(.white.opacity(0.18), in: RoundedRectangle(cornerRadius: size * 0.14, style: .continuous))
+                            }
+                        }
+                        .frame(height: cardHeight)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    NavigationLink(value: BrowseKind.ratings) {
+                        BrowseCard(title: "Ratings", subtitle: "Top and bottom rated by IMDb and Rotten Tomatoes",
+                                   colors: [Color(red: 0.95, green: 0.75, blue: 0.15), Color(red: 0.8, green: 0.2, blue: 0.15)]) {
+                            ScatterArt(items: Self.ratingArt, seed: artSeed &+ 3, count: 9) { r, size in
+                                Text(r).font(.system(size: size * 0.32, weight: .heavy, design: .rounded)).foregroundStyle(.white)
+                                    .minimumScaleFactor(0.6).lineLimit(1)
+                                    .frame(width: size * 0.95, height: size * 0.62)
+                                    .background(.black.opacity(0.22), in: RoundedRectangle(cornerRadius: size * 0.14, style: .continuous))
                             }
                         }
                         .frame(height: cardHeight)

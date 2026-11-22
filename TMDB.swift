@@ -148,16 +148,19 @@ final class TMDBAuth: ObservableObject {
 
     /// Popular titles available on one streaming service, or in one genre.
     /// `provider` is a TMDB watch-provider ID; `genreID` a TMDB genre ID. At least one should be set.
-    func discover(isTV: Bool, provider: Int? = nil, genreID: Int? = nil, page: Int = 1) async -> [MetaItem] {
+    func discover(isTV: Bool, provider: Int? = nil, genreID: Int? = nil, year: Int? = nil,
+                  sort: String = "popularity.desc", minVotes: Int? = nil, page: Int = 1) async -> [MetaItem] {
         guard isConfigured else { return [] }
         let kind = isTV ? "tv" : "movie"
-        var q = ["sort_by": "popularity.desc", "page": String(page), "include_adult": "false"]
+        var q = ["sort_by": sort, "page": String(page), "include_adult": "false"]
         if let provider {
             q["with_watch_providers"] = String(provider)
             q["watch_region"] = Locale.current.region?.identifier ?? "US"
             q["with_watch_monetization_types"] = "flatrate|free|ads"
         }
         if let genreID { q["with_genres"] = String(genreID) }
+        if let year { q[isTV ? "first_air_date_year" : "primary_release_year"] = String(year) }
+        if let minVotes { q["vote_count.gte"] = String(minVotes) }
         guard let u = url("/discover/\(kind)", q),
               let (status, data) = try? await HTTP.send(u), status == 200,
               let results = HTTP.object(data)?["results"] as? [[String: Any]] else { return [] }

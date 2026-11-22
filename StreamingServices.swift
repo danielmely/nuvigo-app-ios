@@ -67,11 +67,13 @@ nonisolated struct GenreOption: Identifiable, Hashable {
 nonisolated enum DiscoverSource: Hashable {
     case service(StreamingService)
     case genre(GenreOption)
+    case year(Int)
 
     var title: String {
         switch self {
         case .service(let s): return s.name
         case .genre(let g): return g.name
+        case .year(let y): return String(y)
         }
     }
 }
@@ -135,10 +137,35 @@ struct GenreCard: View {
     }
 }
 
+/// One release year, drawn the same size and style as `GenreCard`.
+struct YearCard: View {
+    let year: Int
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            LinearGradient(colors: [Color(red: 0.95, green: 0.45, blue: 0.25).opacity(0.8), Color(red: 0.75, green: 0.2, blue: 0.4).opacity(0.7)],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            HStack(spacing: 10) {
+                Text("📅")
+                    .font(.system(size: 26))
+                    .frame(width: 44, height: 44)
+                    .background(.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                Text(String(year))
+                    .font(.subheadline.weight(.heavy))
+                    .foregroundStyle(.white)
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12)
+        }
+        .frame(height: 70)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
 // MARK: Search tab browse cards
 
 /// Which full list a Search-tab card opens.
-nonisolated enum BrowseKind: Hashable { case genres, services }
+nonisolated enum BrowseKind: Hashable { case genres, services, years, ratings }
 
 /// A large card under the search bar that opens the full list of genres or streaming services.
 /// The card is filled with a scatter of pictures (`art`) with a dark fade at the bottom behind the title.
@@ -244,6 +271,17 @@ struct BrowseListView: View {
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible())]
 
+    /// Newest first, back to 1920.
+    static var years: [Int] { Array((1920...max(1920, Calendar.current.component(.year, from: Date()))).reversed()) }
+
+    private var title: LocalizedStringKey {
+        switch kind {
+        case .services: return "Streaming services"
+        case .genres: return "Genres"
+        case .years, .ratings: return "Release years"
+        }
+    }
+
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 12) {
@@ -258,11 +296,16 @@ struct BrowseListView: View {
                         NavigationLink(value: DiscoverSource.genre(g)) { GenreCard(genre: g) }
                             .buttonStyle(.plain)
                     }
+                case .years, .ratings:
+                    ForEach(Self.years, id: \.self) { y in
+                        NavigationLink(value: DiscoverSource.year(y)) { YearCard(year: y) }
+                            .buttonStyle(.plain)
+                    }
                 }
             }
             .padding()
         }
-        .navigationTitle(kind == .services ? "Streaming services" : "Genres")
+        .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .task { if kind == .services { logos = await services.tmdb.providerLogos() } }
     }
@@ -339,6 +382,197 @@ struct DiscoverView: View {
             async let t = g.tvID != nil ? services.tmdb.discover(isTV: true, genreID: g.tvID) : []
             (movies, shows) = await (m, t)
             if movies.isEmpty && !shows.isEmpty { showShows = true }
+        case .year(let y):
+            async let m = services.tmdb.discover(isTV: false, year: y)
+            async let t = services.tmdb.discover(isTV: true, year: y)
+            (movies, shows) = await (m, t)
+            if movies.isEmpty && !shows.isEmpty { showShows = true }
         }
+    }
+}
+
+// MARK: Ratings
+
+/// Which score the Ratings page ranks by.
+nonisolated enum RatingSource: String, CaseIterable, Identifiable {
+    case combined = "Combined", imdb = "IMDb", tomatoes = "Rotten Tomatoes"
+    var id: String { rawValue }
+}
+
+/// The highest or lowest rated movies and shows, by IMDb, Rotten Tomatoes, or both averaged together,
+/// optionally within one genre.
+///
+/// Candidates come from TMDB's best (or worst) scored titles with plenty of votes; each one's IMDb and
+/// Rotten Tomatoes scores are then looked up through OMDb and the list is ranked by the source you pick.
+struct RatingsView: View {
+    @EnvironmentObject var services: Services
+
+    private struct Rated: Identifiable {
+        let item: MetaItem
+        let ratings: TitleRatings
+        var id: String { item.id }
+        var imdb: Double? { ratings.imdb.flatMap(Double.init).map { $0 * 10 } }          // 0...100
+        var tomatoes: Double? { ratings.tomatoes.flatMap { Double($0.replacingOccurrences(of: "%", with: "")) } }
+        func score(_ s: RatingSource) -> Double? {
+            switch s {
+            case .imdb: return imdb
+            case .tomatoes: return tomatoes
+            case .combined: if let a = imdb, let b = tomatoes { return (a + b) / 2 } else { return nil }
+            }
+        }
+    }
+
+    @State private var source: RatingSource = .combined
+    @State private var lowest = false
+    @State private var showShows = false
+    @State private var genre: GenreOption?
+    @State private var pool: [Rated] = []
+    @State private var loading = false
+    @State private var loaded = false
+
+    private struct LoadKey: Hashable { let lowest: Bool; let shows: Bool; let genre: String? }
+
+    private var ranked: [Rated] {
+        let scored = pool.compactMap { r in r.score(source).map { (r, $0) } }
+        return scored.sorted { lowest ? $0.1 < $1.1 : $0.1 > $1.1 }.prefix(50).map(\.0)
+    }
+
+    var body: some View {
+        Group {
+            if !services.tmdb.isConfigured {
+                ContentUnavailableView("TMDB key needed", systemImage: "key.fill",
+                    description: Text("Add your free TMDB API key in Account to browse by rating."))
+            } else if !Ratings.isConfigured {
+                ContentUnavailableView("OMDb key needed", systemImage: "key.fill",
+                    description: Text("IMDb and Rotten Tomatoes scores come from OMDb. Add your free OMDb key in Account."))
+            } else {
+                content
+            }
+        }
+        .navigationTitle("Ratings")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if services.tmdb.isConfigured && Ratings.isConfigured {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker("Genre", selection: $genre) {
+                            Text("All genres").tag(GenreOption?.none)
+                            ForEach(GenreOption.all) { g in Text("\(g.emoji) \(g.name)").tag(GenreOption?.some(g)) }
+                        }
+                    } label: {
+                        Label("Filter", systemImage: genre == nil ? "line.3.horizontal.decrease.circle"
+                                                                  : "line.3.horizontal.decrease.circle.fill")
+                    }
+                }
+            }
+        }
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: 12) {
+                Picker("Source", selection: $source) {
+                    ForEach(RatingSource.allCases) { Text($0 == .tomatoes ? "Rotten Tomatoes" : $0.rawValue).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                Picker("Order", selection: $lowest) {
+                    Text("Highest rated").tag(false)
+                    Text("Lowest rated").tag(true)
+                }
+                .pickerStyle(.segmented)
+                Picker("Type", selection: $showShows) {
+                    Text("Movies").tag(false)
+                    Text("Shows").tag(true)
+                }
+                .pickerStyle(.segmented)
+                if let genre {
+                    Button { self.genre = nil } label: {
+                        Label("\(genre.emoji) \(genre.name)", systemImage: "xmark.circle.fill")
+                            .font(.footnote.weight(.semibold))
+                            .padding(.horizontal, 12).padding(.vertical, 6)
+                            .background(Theme.accent.opacity(0.2), in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            .padding([.horizontal, .top])
+
+            if loading && ranked.isEmpty { ProgressView().padding(.top, 60) }
+            else if loaded && ranked.isEmpty {
+                ContentUnavailableView("Nothing found", systemImage: "star.slash",
+                    description: Text(source == .combined ? "No titles here have both an IMDb and a Rotten Tomatoes score."
+                                                          : "No scores found for these filters."))
+                    .padding(.top, 40)
+            } else {
+                LazyVStack(spacing: 0) {
+                    ForEach(Array(ranked.enumerated()), id: \.element.id) { i, r in
+                        NavigationLink(value: r.item) { row(i + 1, r) }.buttonStyle(.plain)
+                        Divider().padding(.leading, 76)
+                    }
+                }
+                .padding(.top, 8)
+            }
+        }
+        .task(id: LoadKey(lowest: lowest, shows: showShows, genre: genre?.name)) { await load() }
+    }
+
+    private func row(_ rank: Int, _ r: Rated) -> some View {
+        HStack(spacing: 12) {
+            Text("\(rank)").font(.footnote.weight(.bold)).foregroundStyle(.secondary).frame(width: 22)
+            AsyncImage(url: r.item.poster.flatMap(URL.init(string:))) { $0.resizable().scaledToFill() }
+                placeholder: { Rectangle().fill(.quaternary) }
+                .frame(width: 44, height: 66)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+            VStack(alignment: .leading, spacing: 4) {
+                Text(r.item.name).font(.subheadline.weight(.semibold)).lineLimit(2)
+                HStack(spacing: 10) {
+                    if let y = r.item.releaseInfo { Text(y).foregroundStyle(.secondary) }
+                    if let v = r.ratings.imdb { Text("⭐️ \(v)") }
+                    if let t = r.ratings.tomatoes { Text("🍅 \(t)") }
+                }
+                .font(.caption)
+            }
+            Spacer(minLength: 0)
+            if source == .combined, let c = r.score(.combined) {
+                Text(String(format: "%.0f", c))
+                    .font(.headline.weight(.heavy))
+                    .padding(.horizontal, 10).padding(.vertical, 4)
+                    .background(Theme.accent.opacity(0.2), in: Capsule())
+            }
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
+    }
+
+    private func load() async {
+        loading = true
+        defer { loading = false; loaded = true }
+        let tv = showShows
+        let gid = tv ? genre?.tvID : genre?.movieID
+        let sort = lowest ? "vote_average.asc" : "vote_average.desc"
+        let votes = lowest ? 500 : 1000
+        if genre != nil && gid == nil { pool = []; return }
+
+        var candidates: [MetaItem] = []
+        for page in 1...3 {
+            if Task.isCancelled { return }
+            candidates += await services.tmdb.discover(isTV: tv, genreID: gid, sort: sort, minVotes: votes, page: page)
+        }
+        var seen = Set<String>()
+        candidates = candidates.filter { seen.insert($0.id).inserted }
+
+        var out: [Rated] = []
+        for chunk in stride(from: 0, to: candidates.count, by: 12) {
+            if Task.isCancelled { return }
+            let batch = Array(candidates[chunk..<min(chunk + 12, candidates.count)])
+            await withTaskGroup(of: (MetaItem, TitleRatings?).self) { group in
+                for m in batch { group.addTask { (m, await Ratings.load(imdbID: m.id)) } }
+                for await (m, r) in group { if let r { out.append(Rated(item: m, ratings: r)) } }
+            }
+        }
+        Ratings.persist()
+        if !Task.isCancelled { pool = out }
     }
 }

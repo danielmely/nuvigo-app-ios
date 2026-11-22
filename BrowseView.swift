@@ -46,7 +46,9 @@ struct BrowseView: View {
     private static let genreTints: [Color] = [.blue, .green, .purple, .red, .mint, .cyan, .brown, .indigo]
 
     private var genres: [String] {
-        Array(Set(store.addons.flatMap { $0.manifest.catalogs.flatMap { $0.genreOptions } })).sorted()
+        Array(Set(store.addons.flatMap { $0.manifest.catalogs.flatMap { $0.genreOptions } }))
+            .filter { Int($0.trimmingCharacters(in: .whitespaces)) == nil }   // years live in Search → Release years
+            .sorted()
     }
 
     /// The six cards that fill the first screen, in this order.
