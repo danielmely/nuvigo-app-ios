@@ -163,6 +163,9 @@ struct NuviGoApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
+            // The pages and the tab bar are stacked, not overlaid: every page, and every screen pushed from it,
+            // ends exactly where the bar begins, so nothing can scroll out of sight behind it.
+            VStack(spacing: 0) {
             ZStack {
                 ForEach(0..<Self.tabInfo.count, id: \.self) { i in
                     if visited.contains(i) {
@@ -181,9 +184,11 @@ struct NuviGoApp: App {
                     .onAppear { pageWidth = g.size.width }
                     .onChange(of: g.size.width) { _, w in pageWidth = w }
             })
+            .clipped()
+            tabBar
+            }
             .scrollDisabled(swipeLocked)
             .simultaneousGesture(tabSwipe)
-            .safeAreaInset(edge: .bottom, spacing: 0) { tabBar }
             .environmentObject(store)
             .environmentObject(trakt)
             .environmentObject(progress)

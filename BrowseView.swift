@@ -259,8 +259,8 @@ struct BrowseView: View {
                         }
                     }
                     .padding(.top)
-                    // Room under the last card so its title and emoji scroll clear of the tab bar and stay visible when you let go.
-                    .padding(.bottom, 110)
+                    // A little breathing room under the last card.
+                    .padding(.bottom, 24)
                 }
             }
             .navigationTitle("")
