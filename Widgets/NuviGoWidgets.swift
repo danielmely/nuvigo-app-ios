@@ -182,13 +182,13 @@ struct DownloadLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) { Image(systemName: "arrow.down.circle.fill").foregroundStyle(accent).font(.title2) }
-                DynamicIslandExpandedRegion(.trailing) { Text("\(Int(context.state.progress * 100))%").font(.title3.weight(.bold)) }
+                DynamicIslandExpandedRegion(.trailing) { Text(context.state.progress, format: .percent.precision(.fractionLength(0))).font(.title3.weight(.bold)) }
                 DynamicIslandExpandedRegion(.center) { Text(context.state.title).lineLimit(1).font(.subheadline) }
                 DynamicIslandExpandedRegion(.bottom) { ProgressView(value: context.state.progress).tint(accent) }
             } compactLeading: {
                 Image(systemName: "arrow.down.circle.fill").foregroundStyle(accent)
             } compactTrailing: {
-                Text("\(Int(context.state.progress * 100))%").font(.caption2.weight(.bold))
+                Text(context.state.progress, format: .percent.precision(.fractionLength(0))).font(.caption2.weight(.bold))
             } minimal: {
                 Image(systemName: "arrow.down").foregroundStyle(accent)
             }

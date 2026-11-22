@@ -145,7 +145,7 @@ struct RecommendationCard: View {
                 Text(rec.item.name).font(.caption.weight(.semibold)).lineLimit(1).foregroundStyle(.primary)
                 HStack(spacing: 4) {
                     Image(systemName: "hand.thumbsup.fill").font(.caption2)
-                    Text("\(rec.percent)% likely to like").font(.caption2.weight(.bold))
+                    Text("\(Double(rec.percent) / 100, format: .percent.precision(.fractionLength(0))) likely to like").font(.caption2.weight(.bold))
                 }
                 .foregroundStyle(Theme.accent)
                 ProgressView(value: Double(rec.percent), total: 100).tint(Theme.accent)
