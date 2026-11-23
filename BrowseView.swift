@@ -268,6 +268,13 @@ struct BrowseView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: BrowseCategory.self) { CategoryView(category: $0) }
             .navigationDestination(for: MetaItem.self) { DetailView(item: $0) }
+            .onAppear {
+                // The default card order changed: clear any older saved order once so the new default shows.
+                if UserDefaults.standard.integer(forKey: "dashboardOrderVersion") < 2 {
+                    orderRaw = ""
+                    UserDefaults.standard.set(2, forKey: "dashboardOrderVersion")
+                }
+            }
             .task(id: "\(store.addons.map(\.id).joined(separator: ","))|\(trakt.watchlist.count)|\(trakt.isSignedIn)|\(services.folders.map(\.id).joined(separator: ","))|\(preload.done)") {
                 guard preload.done else { return }   // the start-up screen is still loading everything
                 filter.note(ids: progress.continueWatching.map(\.itemID) + downloads.entries.map(\.itemID) + watched.items.map(\.id))

@@ -61,6 +61,9 @@ struct AppearanceSection: View {
             .pickerStyle(.segmented)
             Text("System follows your phone's setting. Light and Dark override it.")
                 .font(.footnote).foregroundStyle(.secondary)
+            Button("Reset dashboard card order") { UserDefaults.standard.set("", forKey: "dashboardOrder") }
+            Text("Puts the dashboard cards back in their default order.")
+                .font(.footnote).foregroundStyle(.secondary)
             AppIconSection()
             DownloadsSection()
             EpisodeAlertsSection()
